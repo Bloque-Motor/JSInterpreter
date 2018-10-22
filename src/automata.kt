@@ -88,41 +88,24 @@ class Automata(tp: TokenPrinter){
     }
 
     fun state7(char: Char){
-
-
-
-        var contador = 0;
-
-        if(char == '|'){
-
-            contador = 1
-            state = 7
-        }
-
-        if(contador == 1){
-
-            when{
-
-                (char == '=')-> genToken.addToken(11, "|=")
-                (char != '=')-> state = 0
-
-            }
-
-            contador = 0
-
-        }
+        
+        state = 8
 
     }
 
     fun state8(char: Char){
 
-        //no hace falta
-
+            if(char == '='){
+                genToken.addToken(11, "|=")
+            }
+                
+        state = 0
     }
 
     fun state9(char: Char){
 
         var numero = char
+        
         var numeroTotal = ""
 
         when{
@@ -156,7 +139,14 @@ class Automata(tp: TokenPrinter){
 
     fun state11(char: Char){
 
-    
+        var cadena = ""
+
+        if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
+
+            state = 11
+
+        }
+
 
     }
 
@@ -174,34 +164,18 @@ class Automata(tp: TokenPrinter){
 
     fun state15(char: Char){
 
-        var contador = 0;
+      state = 16
+        
+    }
+
+    fun state16(char: Char) {
 
         if(char == '/'){
-
-            contador = 1
-            state = 15
-        }
-
-        if(contador == 1){
-
-            when{
-
-                (char == '/')-> genToken.addToken(1, "//" )
-                (char != '/')-> state = 0
-
-            }
-
-            contador = 0
+            
+            genToken.addToken(1, "//")
 
         }
-
+        
+        state = 0
     }
-
-    fun state16(char: Char){
-
-       //no hace falta
-
-    }
-
-}
 
