@@ -1,4 +1,4 @@
-class Automata{
+class Automata(tp: TokenPrinter){
 
     var state = 0
     var token = ""

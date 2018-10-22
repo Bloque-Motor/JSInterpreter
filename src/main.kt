@@ -2,7 +2,8 @@ import java.io.File
 import java.io.PrintWriter
 
 fun main(args : Array<String>) {
-    var at = Automata()
+    var tp = TokenPrinter()
+    var at = Automata(tp)
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
