@@ -88,7 +88,7 @@ class Automata(tp: TokenPrinter){
     }
 
     fun state7(char: Char){
-        
+
         state = 8
 
     }
@@ -96,22 +96,19 @@ class Automata(tp: TokenPrinter){
     fun state8(char: Char){
 
             if(char == '='){
+
                 genToken.addToken(11, "|=")
             }
-                
+
         state = 0
     }
 
     fun state9(char: Char){
 
-        var numero = char
-        
-        var numeroTotal = ""
-
         when{
 
             (char in '0'..'9')-> {
-                numeroTotal = numeroTotal + numero
+                token = token + char
                 state = 9
             }
 
@@ -119,8 +116,9 @@ class Automata(tp: TokenPrinter){
 
             else-> {
 
-                if(numeroTotal.toInt() < 32767) {
-                    genToken.addToken("Entero", numeroTotal)
+                if(token.toInt() < 32767) {
+                    genToken.addToken(2, token)
+                    token = ""
                 }
                 state = 0
             }
@@ -139,11 +137,9 @@ class Automata(tp: TokenPrinter){
 
     fun state11(char: Char){
 
-        var cadena = ""
-
         if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
 
-            state = 11
+            token = token + char
 
         }
 
@@ -152,6 +148,7 @@ class Automata(tp: TokenPrinter){
 
     fun state12(char: Char){
 
+        var cadena = char
     }
 
     fun state13(char: Char){
@@ -165,17 +162,18 @@ class Automata(tp: TokenPrinter){
     fun state15(char: Char){
 
       state = 16
-        
+
     }
 
     fun state16(char: Char){
 
         if(char == '/'){
-            
+
             genToken.addToken(1, "//")
 
         }
-        
+
         state = 0
     }
 }
+
