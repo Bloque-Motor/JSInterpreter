@@ -178,4 +178,4 @@ class Automata(tp: TokenPrinter){
         
         state = 0
     }
-
+}
