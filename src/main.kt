@@ -1,11 +1,14 @@
 import java.io.File
+import java.io.PrintWriter
 
 fun main(args : Array<String>) {
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
-    val fileExists = file.exists()
-    if(fileExists){
+    println("Enter output filename:")
+    val outFileName: String? = readLine()
+    val output = PrintWriter(outFileName)
+    if(file.exists()){
         println("$fileName does exist. Reading file...")
         println()
         val bufferedReader = file.bufferedReader()
@@ -32,9 +35,12 @@ fun main(args : Array<String>) {
                 }
             lines++
         }
+
         println()
         println("___________________________________")
-        println("Chacacter count")
+        File(outFileName).printWriter().use { out ->
+            out.println("Chacacter count")
+        }
         println()
         println("Caps: $caps")
         println("Small letters: $small")
@@ -45,4 +51,7 @@ fun main(args : Array<String>) {
     } else {
         println("$fileName does not exist.")
     }
+
+
 }
+
