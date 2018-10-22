@@ -168,7 +168,7 @@ class Automata(tp: TokenPrinter){
         
     }
 
-    fun state16(char: Char) {
+    fun state16(char: Char){
 
         if(char == '/'){
             
