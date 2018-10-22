@@ -2,6 +2,7 @@ class Automata(tp: TokenPrinter){
 
     var state = 0
     var token = ""
+    var genToken = TokenPrinter()
 
     fun process(char: Char){
         when(state){
@@ -27,29 +28,62 @@ class Automata(tp: TokenPrinter){
 
     fun state0(char: Char){
 
+        when{
+            (char == '+')-> state1(char)
+            (char == '+')-> state1(char)
+            (char == '<')-> state2(char)
+            (char == '!')-> state3(char)
+            (char == '=')-> state4(char)
+            (char == '(')-> state5(char)
+            (char == ')')-> state6(char)
+            (char == '|')-> state7(char)
+            (char in '0'..'9')-> state9(char)
+            (char == '"' )-> state11(char)
+            ((char in 'a' .. 'z') || (char in 'A' .. 'Z')) -> state13(char)
+            (char == '/')-> state15(char)
+        }
+
+
     }
 
     fun state1(char: Char){
+
+        genToken.addToken("OP_arimetico", Character.toString(char))
+        state = 0
 
     }
 
     fun state2(char: Char){
 
+        genToken.addToken("OP_relacional", Character.toString(char))
+        state = 0
     }
 
     fun state3(char: Char){
+
+        genToken.addToken("OP_logico", Character.toString(char))
+        state = 0
 
     }
 
     fun state4(char: Char){
 
+        genToken.addToken("OP_asignacion", Character.toString(char))
+        state = 0
+
     }
 
     fun state5(char: Char){
 
+        genToken.addToken("OP_delimitador", Character.toString(char))
+        state = 0
+
     }
 
     fun state6(char: Char){
+
+        genToken.addToken("OP_delimitador", Character.toString(char))
+        state = 0
 
     }
 
