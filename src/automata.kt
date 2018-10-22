@@ -1,4 +1,4 @@
-cclass Automata(tp: TokenPrinter){
+class Automata(tp: TokenPrinter){
 
     var state = 0
     var token = ""
@@ -210,7 +210,3 @@ cclass Automata(tp: TokenPrinter){
         state = 0
     }
 }
-
-
-
-
