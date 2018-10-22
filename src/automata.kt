@@ -1,4 +1,4 @@
-class Automata(tp: TokenPrinter){
+cclass Automata(tp: TokenPrinter){
 
     var state = 0
     var token = ""
@@ -118,8 +118,9 @@ class Automata(tp: TokenPrinter){
 
                 if(token.toInt() < 32767) {
                     genToken.addToken(2, token)
-                    token = ""
                 }
+
+                token = ""
                 state = 0
             }
 
@@ -137,26 +138,59 @@ class Automata(tp: TokenPrinter){
 
     fun state11(char: Char){
 
-        if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
-
-            token = token + char
-
-        }
-
+        state = 12
+        token = token + char
 
     }
 
     fun state12(char: Char){
 
-        var cadena = char
+        if(char != '"'){
+
+            token = token + char
+            state = 11
+        }
+
+        else{
+
+            token = token + char
+            genToken.addToken(3, token)
+            state = 0
+            token = ""
+        }
     }
 
     fun state13(char: Char){
+
+        if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
+
+            token = token + char
+            state = 11
+
+        }
+
+        if(char == ' '){
+
+            genToken.addToken(12, token) // identificadores/palabras reservadas
+            state = 0
+            token = ""
+
+        }
+
+        else{
+
+            state = 0
+            token = ""
+        }
+
+
 
     }
 
     fun state14(char: Char){
 
+
+        //no  hace falta
     }
 
     fun state15(char: Char){
@@ -176,4 +210,7 @@ class Automata(tp: TokenPrinter){
         state = 0
     }
 }
+
+
+
 
