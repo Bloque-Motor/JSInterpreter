@@ -48,62 +48,115 @@ class Automata(tp: TokenPrinter){
 
     fun state1(char: Char){
 
-        genToken.addToken("OP_arimetico", Character.toString(char))
+        genToken.addToken(8, Character.toString(char))
         state = 0
 
     }
 
     fun state2(char: Char){
 
-        genToken.addToken("OP_relacional", Character.toString(char))
+        genToken.addToken(9, Character.toString(char))
         state = 0
     }
 
     fun state3(char: Char){
 
-        genToken.addToken("OP_logico", Character.toString(char))
+        genToken.addToken(10, Character.toString(char))
         state = 0
 
     }
 
     fun state4(char: Char){
 
-        genToken.addToken("OP_asignacion", Character.toString(char))
+        genToken.addToken(11, Character.toString(char))
         state = 0
 
     }
 
     fun state5(char: Char){
 
-        genToken.addToken("OP_delimitador", Character.toString(char))
+        genToken.addToken(15, Character.toString(char))
         state = 0
 
     }
 
     fun state6(char: Char){
 
-        genToken.addToken("OP_delimitador", Character.toString(char))
+        genToken.addToken(15, Character.toString(char))
         state = 0
 
     }
 
     fun state7(char: Char){
 
+
+
+        var contador = 0;
+
+        if(char == '|'){
+
+            contador = 1
+            state = 7
+        }
+
+        if(contador == 1){
+
+            when{
+
+                (char == '=')-> genToken.addToken(11, "|=")
+                (char != '=')-> state = 0
+
+            }
+
+            contador = 0
+
+        }
+
     }
 
     fun state8(char: Char){
+
+        //no hace falta
 
     }
 
     fun state9(char: Char){
 
+        var numero = char
+        var numeroTotal = ""
+
+        when{
+
+            (char in '0'..'9')-> {
+                numeroTotal = numeroTotal + numero
+                state = 9
+            }
+
+
+
+            else-> {
+
+                if(numeroTotal.toInt() < 32767) {
+                    genToken.addToken("Entero", numeroTotal)
+                }
+                state = 0
+            }
+
+
+
+        }
+
     }
 
     fun state10(char: Char){
 
+        //NO HACE FALTA
+
     }
 
     fun state11(char: Char){
+
+    
 
     }
 
@@ -121,9 +174,32 @@ class Automata(tp: TokenPrinter){
 
     fun state15(char: Char){
 
+        var contador = 0;
+
+        if(char == '/'){
+
+            contador = 1
+            state = 15
+        }
+
+        if(contador == 1){
+
+            when{
+
+                (char == '/')-> genToken.addToken(1, "//" )
+                (char != '/')-> state = 0
+
+            }
+
+            contador = 0
+
+        }
+
     }
 
     fun state16(char: Char){
+
+       //no hace falta
 
     }
 
