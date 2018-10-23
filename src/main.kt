@@ -24,7 +24,6 @@ fun main(args: Array<String>) {
     for (line in text) {
         try {
             var currentLine = line.toCharArray()
-            var char: Char?
             for (char in currentLine) {
                 at.process(char)
             }
