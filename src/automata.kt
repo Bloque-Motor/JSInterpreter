@@ -2,7 +2,7 @@ class Automata(tp: TokenPrinter){
 
     var state = 0
     var token = ""
-    var genToken = TokenPrinter()
+    var genToken = tp
 
     fun process(char: Char){
         when(state){

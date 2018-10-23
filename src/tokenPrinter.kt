@@ -14,11 +14,11 @@ class TokenPrinter(){
     //var declarations = mutableListOf<String>()
     //var logicLit = mutableListOf<String>()
 
-    fun addToken(token: String, type: Int){
+    fun addToken(type: Int, token: String){
         var line = ""
         when(type){
             1->{
-                line = "<comment, //>"
+                line = "<comment, $token>"
             }
             2-> {
                 line = "<number, $token>"
