@@ -149,7 +149,7 @@ class Automata(tp: TokenPrinter){
         if(char != '"'){
 
             token = token + char
-            state = 11
+            state = 12
         }
 
         else{
