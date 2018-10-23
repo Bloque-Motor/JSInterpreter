@@ -1,5 +1,4 @@
 import java.io.File
-import java.io.PrintWriter
 import java.lang.Exception
 import kotlin.system.exitProcess
 
@@ -9,8 +8,6 @@ fun main(args: Array<String>) {
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
-    println("Enter output filename:")
-    val outFileName = readLine()
     var lines = 0
     if (!file.exists()) {
         println("$fileName does not exist.")
@@ -33,7 +30,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    tp.makeTokenFile(outFileName)
+    tp.makeTokenFile()
 
 
 }

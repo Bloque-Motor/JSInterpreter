@@ -30,7 +30,6 @@ class Automata(tp: TokenPrinter){
 
         when{
             (char == '+')-> state1(char)
-            (char == '+')-> state1(char)
             (char == '<')-> state2(char)
             (char == '!')-> state3(char)
             (char == '=')-> state4(char)

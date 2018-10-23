@@ -1,6 +1,10 @@
 import java.io.File
 
 class TokenPrinter(){
+
+    val tokenFileName = """Output\Tokens.txt"""
+    val symbolTableFile = """Output\SymbolTable.txt"""
+
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
     var keywords = mutableListOf<String>()
@@ -27,12 +31,12 @@ class TokenPrinter(){
                 line = "<string, ${strings.size}>"
                 strings.add(token)
             }
-/*            4->{}//Newline
+/*          4->{}//Newline
             5->{}//Tab
             6->{}//Quotes escape: \"
             7->{}//Logical literal (true/false). Included in 16 for now */
             8->{
-                line = "<ariOp, ${ariOps.indexOf(token)}"
+                line = "<ariOp, ${ariOps.indexOf(token)}>"
             }
             9->{
                 line = "<relationOp, ${relationOps.indexOf(token)}>"
@@ -59,8 +63,8 @@ class TokenPrinter(){
         tokenList.add(line)
     }
 
-    fun makeTokenFile(outFileName: String?){
-        File(outFileName).printWriter().use { out ->
+    fun makeTokenFile(){
+        File(tokenFileName).printWriter().use { out ->
             for(lines in tokenList){
                 out.println("$lines")
             }
