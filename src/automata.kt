@@ -41,6 +41,8 @@ class Automata(tp: TokenPrinter){
             (char == '"' )-> state11(char)
             ((char in 'a' .. 'z') || (char in 'A' .. 'Z')) -> state13(char)
             (char == '/')-> state15(char)
+            
+            else-> state = 0
         }
 
 
