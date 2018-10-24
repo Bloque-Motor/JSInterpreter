@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
-    var lines = 0
+    var lines = 1
     if (!file.exists()) {
         println("$fileName does not exist.")
         exitProcess(-1)
@@ -25,8 +25,9 @@ fun main(args: Array<String>) {
                 at.process(char)
             }
             lines++
+            at.process('\n')
         } catch (e: Exception) {
-            println("Error at line $lines: ${e.message}")
+            if(!(e.message == "comment")) println("Error at line $lines: ${e.message}")
             continue@loop
         }
     }

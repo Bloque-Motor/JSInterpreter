@@ -28,8 +28,7 @@ class TokenPrinter(){
                 line = "<number, $token>"
             }
             3->{
-                line = "<string, ${strings.size}>"
-                strings.add(token)
+                line = "<string, $token>"
             }
 /*          4->{}//Newline
             5->{}//Tab
@@ -82,7 +81,7 @@ class TokenPrinter(){
             out.println()
             for (line in identifiers){
                 out.println("* LEXEMA : '$line'")
-                out.println("ATRIBUTOS :")
+                out.println("  ATRIBUTOS :")
                 out.println("-------------------------")
             }
         }
