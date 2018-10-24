@@ -51,7 +51,7 @@ class TokenPrinter(){
                 if(!identifiers.contains(token)) identifiers.add(token)
                 line = "<id, ${identifiers.indexOf(token)}>"
             }
-/*            13->{} //Declarations. Included in 16 for now
+/*          13->{} //Declarations. Included in 16 for now
             14->{} //Variable types. Included in 16 for now  */
             15->{
                 line = "<delimiter, ${delimiters.indexOf(token)}>"
@@ -69,6 +69,18 @@ class TokenPrinter(){
                 out.println("$lines")
             }
 
+        }
+    }
+
+    fun makeSymbolTable(){
+        File(symbolTableFile).printWriter().use { out ->
+            out.println("TABLA DE IDENTIFICADORES #1:")
+            out.println()
+            for (line in identifiers){
+                out.println("* LEXEMA : '$line'")
+                out.println("ATRIBUTOS :")
+                out.println("-------------------------")
+            }
         }
     }
 

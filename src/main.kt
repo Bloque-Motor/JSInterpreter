@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     println()
     val bufferedReader = file.bufferedReader()
     val text: List<String> = bufferedReader.readLines()
-    for (line in text) {
+    loop@ for (line in text) {
         try {
             var currentLine = line.toCharArray()
             for (char in currentLine) {
@@ -27,10 +27,12 @@ fun main(args: Array<String>) {
             lines++
         } catch (e: Exception) {
             println("Error at line $lines: ${e.message}")
+            continue@loop
         }
     }
 
     tp.makeTokenFile()
+    tp.makeSymbolTable()
 
 
 }
