@@ -28,8 +28,7 @@ class TokenPrinter(){
                 line = "<number, $token>"
             }
             3->{
-                line = "<string, ${strings.size}>"
-                strings.add(token)
+                line = "<string, $token>"
             }
 /*          4->{}//Newline
             5->{}//Tab
