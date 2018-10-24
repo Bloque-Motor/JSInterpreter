@@ -4,6 +4,7 @@ class TokenPrinter(){
 
     val tokenFileName = """Output\Tokens.txt"""
     val symbolTableFile = """Output\SymbolTable.txt"""
+    val errorFile = """Output\Errors.txt"""
 
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
@@ -15,6 +16,7 @@ class TokenPrinter(){
     var strings = mutableListOf<String>()
     var identifiers = mutableListOf<String>()
     var tokenList = mutableListOf<String>()
+    var errors = mutableListOf<String>()
     //var declarations = mutableListOf<String>()
     //var logicLit = mutableListOf<String>()
 
@@ -64,6 +66,19 @@ class TokenPrinter(){
 
     fun isKeyword(word: String): Boolean{
         return keywords.contains(word)
+    }
+
+    fun addError(message: String){
+        errors.add(message)
+    }
+
+    fun makeErrorFile(){
+        File(errorFile).printWriter().use { out ->
+            for(lines in errors){
+                out.println("$lines")
+            }
+
+        }
     }
 
     fun makeTokenFile(){

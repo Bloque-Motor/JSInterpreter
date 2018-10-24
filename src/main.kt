@@ -8,7 +8,8 @@ fun main(args: Array<String>) {
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
-    var lines = 1
+    var lines = 0
+    var errors = 0
     if (!file.exists()) {
         println("$fileName does not exist.")
         exitProcess(-1)
@@ -19,19 +20,22 @@ fun main(args: Array<String>) {
     val bufferedReader = file.bufferedReader()
     val text: List<String> = bufferedReader.readLines()
     loop@ for (line in text) {
+        lines++
         try {
             var currentLine = line.toCharArray()
             for (char in currentLine) {
                 at.process(char)
             }
-            lines++
             at.process('\n')
         } catch (e: Exception) {
-            if(!(e.message == "comment")) println("Error at line $lines: ${e.message}")
+            if(e.message == "comment") continue@loop
+            errors++
+            tp.addError("Error at line $lines: ${e.message}")
             continue@loop
         }
     }
 
+    if(errors > 0) tp.makeErrorFile()
     tp.makeTokenFile()
     tp.makeSymbolTable()
 
