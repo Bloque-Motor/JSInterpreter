@@ -32,50 +32,17 @@ class Automata(tp: TokenPrinter){
     fun state0(char: Char){
 
         when{
-            (char == '+')-> {
-                state = 1
-                state1(char)
-            }
-            (char == '<')-> {
-                state = 2
-                state2(char)
-            }
-            (char == '!')-> {
-                state = 3
-                state3(char)
-            }
-            (char == '=')-> {
-                state = 4
-                state4(char)
-            }
-            (char == '(')-> {
-                state = 5
-                state5(char)
-            }
-            (char == ')')-> {
-                state = 6
-                state6(char)
-            }
-            (char == '|')-> {
-                state = 7
-                state7(char)
-            }
-            (char in '0'..'9')-> {
-                state = 9
-                state9(char)
-            }
-            (char == '"' )-> {
-                state = 11
-                state11(char)
-            }
-            ((char in 'a' .. 'z') || (char in 'A' .. 'Z')) -> {
-                state = 13
-                state13(char)
-            }
-            (char == '/')-> {
-                state = 15
-                state15(char)
-            }
+            (char == '+')-> state1(char)
+            (char == '<')-> state2(char)
+            (char == '!')-> state3(char)
+            (char == '=')-> state4(char)
+            (char == '(')-> state5(char)
+            (char == ')')-> state6(char)
+            (char == '|')-> state7(char)
+            (char in '0'..'9')-> state9(char)
+            (char == '"' )-> state11(char)
+            ((char in 'a' .. 'z') || (char in 'A' .. 'Z')) -> state13(char)
+            (char == '/')-> state15(char)
 
             else-> state = 0
         }
@@ -95,15 +62,12 @@ class Automata(tp: TokenPrinter){
         when(char){
             '<' -> token = token + char
             '=' ->{
-                token = token + char
                 genToken.addToken(9, token)
                 state = 0
-                token = ""
             }
             else ->{
                 genToken.addToken(9, token)
                 state = 0
-                token = ""
                 state0(char)
             }
         }
@@ -162,16 +126,37 @@ class Automata(tp: TokenPrinter){
                 state = 9
             }
 
+            ((char in 'a'..'z') || (char in 'A'..'Z'))-> {
 
+                throw Exception("number")
+                token = ""
+                state = 0
+            }
 
             else-> {
 
                 if(token.toInt() < 32767) {
                     genToken.addToken(2, token)
+                    token = ""
+                    state = 0
+
+                }
+                else{
+
+                    throw Exception("number")
+                    token = ""
+                    state = 0
                 }
 
-                token = ""
-                state = 0
+                when{
+                    (char == '+')-> state1(char)
+                    (char == '<')-> state2(char)
+                    (char == '!')-> state3(char)
+                    (char == '=')-> state4(char)
+                    (char == '(')-> state5(char)
+                    (char == ')')-> state6(char)
+                }
+
             }
 
 
@@ -225,11 +210,29 @@ class Automata(tp: TokenPrinter){
                 state = 0
                 token = ""
 
+                when{
+                    (char == '+')-> state1(char)
+                    (char == '<')-> state2(char)
+                    (char == '!')-> state3(char)
+                    (char == '=')-> state4(char)
+                    (char == '(')-> state5(char)
+                    (char == ')')-> state6(char)
+                }
+
             }else{
 
                 genToken.addToken(12, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
+
+                when{
+                    (char == '+')-> state1(char)
+                    (char == '<')-> state2(char)
+                    (char == '!')-> state3(char)
+                    (char == '=')-> state4(char)
+                    (char == '(')-> state5(char)
+                    (char == ')')-> state6(char)
+                }
 
             }
 
