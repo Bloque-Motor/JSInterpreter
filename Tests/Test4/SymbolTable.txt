@@ -1,0 +1,206 @@
+TABLA DE IDENTIFICADORES #1:
+
+* LEXEMA : 'string'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 's'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'FactorialRecursivo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'n'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'uno'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'UNO'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'FactorialDo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'factorial'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'FactorialWhile'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'i'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'num'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'FactorialFor'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'For'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'Do'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'While'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'imprime'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'msg'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'f'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'print'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'cadena'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'bool'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'log'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'prompt'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'No'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'existe'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'el'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'de'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'un'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'negativo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'bisiesto'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'a'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'dias'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'm'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'esFechaCorrecta'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'd'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'imprime2'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'v'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'w'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'potencia'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'z'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'dim'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'demo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'v1'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'v2'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'v3'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'zv'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'Escriba'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'meros'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'su'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'nombre'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'v0'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'Es'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'en'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'este'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'instante'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'cuando'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'se'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'llama'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'esta'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'funci'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'y'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'por'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'tanto'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'ejecuta'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'todo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'c'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'digo'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'dicha'
+  ATRIBUTOS :
+-------------------------

@@ -1,0 +1,86 @@
+TABLA DE IDENTIFICADORES #1:
+
+* LEXEMA : 'Sort'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'from'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'export'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'QuickSortInPlace'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'This'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'process'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'is'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'difficult'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'to'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'describe'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'but'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'much'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'clearer'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'a'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'visualization'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'see'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'http'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'param'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'originalArray'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'Not'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'sorted'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'array'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'number'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'inputLowIndex'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'inputHighIndex'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'recursiveCall'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'Sorted'
+  ATRIBUTOS :
+-------------------------
+* LEXEMA : 'sort'
+  ATRIBUTOS :
+-------------------------
