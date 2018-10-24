@@ -82,7 +82,7 @@ class TokenPrinter(){
             out.println()
             for (line in identifiers){
                 out.println("* LEXEMA : '$line'")
-                out.println("ATRIBUTOS :")
+                out.println("  ATRIBUTOS :")
                 out.println("-------------------------")
             }
         }

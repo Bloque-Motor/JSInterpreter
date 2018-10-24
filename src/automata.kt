@@ -1,3 +1,6 @@
+import java.lang.Exception
+import javax.xml.stream.events.Comment
+
 class Automata(tp: TokenPrinter){
 
     var state = 0
@@ -16,11 +19,11 @@ class Automata(tp: TokenPrinter){
             7-> state7(char)
             8-> state8(char)
             9-> state9(char)
-            10-> state10(char)
+//            10-> state10(char)
             11-> state11(char)
             12-> state12(char)
             13-> state13(char)
-            14-> state14(char)
+//            14-> state14(char)
             15-> state15(char)
             16-> state16(char)
         }
@@ -47,54 +50,54 @@ class Automata(tp: TokenPrinter){
 
     }
 
-    fun state1(char: Char){
+    private fun state1(char: Char){
 
         genToken.addToken(8, Character.toString(char))
         state = 0
 
     }
 
-    fun state2(char: Char){
+    private fun state2(char: Char){
 
         genToken.addToken(9, Character.toString(char))
         state = 0
     }
 
-    fun state3(char: Char){
+    private fun state3(char: Char){
 
         genToken.addToken(10, Character.toString(char))
         state = 0
 
     }
 
-    fun state4(char: Char){
+    private fun state4(char: Char){
 
         genToken.addToken(11, Character.toString(char))
         state = 0
 
     }
 
-    fun state5(char: Char){
+    private fun state5(char: Char){
 
         genToken.addToken(15, Character.toString(char))
         state = 0
 
     }
 
-    fun state6(char: Char){
+    private fun state6(char: Char){
 
         genToken.addToken(15, Character.toString(char))
         state = 0
 
     }
 
-    fun state7(char: Char){
+    private fun state7(char: Char){
 
         state = 8
 
     }
 
-    fun state8(char: Char){
+    private fun state8(char: Char){
 
         if(char == '='){
 
@@ -104,7 +107,7 @@ class Automata(tp: TokenPrinter){
         state = 0
     }
 
-    fun state9(char: Char){
+    private fun state9(char: Char){
 
         when{
 
@@ -131,20 +134,20 @@ class Automata(tp: TokenPrinter){
 
     }
 
-    fun state10(char: Char){
+/*    private fun state10(char: Char){
 
         //NO HACE FALTA
 
-    }
+    }*/
 
-    fun state11(char: Char){
+    private fun state11(char: Char){
 
         state = 12
         token = token + char
 
     }
 
-    fun state12(char: Char){
+    private fun state12(char: Char){
 
         if(char != '"'){
 
@@ -161,24 +164,23 @@ class Automata(tp: TokenPrinter){
         }
     }
 
-    fun state13(char: Char){
+    private fun state13(char: Char){
 
         if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
 
             token = token + char
+            println(token)
             state = 13
 
-        }
-
-        if(char == ' '){
+        }else{
 
             if(genToken.isKeyword(token)) {
 
                 genToken.addToken(16, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
-            }
-            else{
+
+            }else{
 
                 genToken.addToken(12, token) // identificadores/palabras reservadas
                 state = 0
@@ -188,29 +190,24 @@ class Automata(tp: TokenPrinter){
 
         }
 
-        else{
-
-            state = 0
-            token = ""
-        }
-
-
 
     }
 
-    fun state14(char: Char){
+/*
+    private fun state14(char: Char){
 
 
         //no  hace falta
     }
+*/
 
-    fun state15(char: Char){
+    private fun state15(char: Char){
 
         state = 16
 
     }
 
-    fun state16(char: Char){
+    private fun state16(char: Char){
 
         if(char == '/'){
 
@@ -219,5 +216,6 @@ class Automata(tp: TokenPrinter){
         }
 
         state = 0
+        throw Exception("comment")
     }
 }
