@@ -61,7 +61,10 @@ class Automata(tp: TokenPrinter){
 
         when(char){
             '<' -> token = token + char
-            '=' -> genToken.addToken(9, token)
+            '=' ->{
+                genToken.addToken(9, token)
+                state = 0
+            }
             else ->{
                 genToken.addToken(9, token)
                 state = 0
