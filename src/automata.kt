@@ -92,7 +92,10 @@ class Automata(tp: TokenPrinter){
 
     private fun state2(char: Char){
 
-        when(char){
+        genToken.addToken(9, Character.toString(char))
+        state = 0
+
+        /*when(char){
             '<' -> token = token + char
             '=' ->{
                 token = token + char
@@ -106,7 +109,7 @@ class Automata(tp: TokenPrinter){
                 state = 0
                 state0(char)
             }
-        }
+        }*/
     }
 
     private fun state3(char: Char){
