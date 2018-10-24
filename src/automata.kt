@@ -40,7 +40,7 @@ class Automata(tp: TokenPrinter){
             (char == '"' )-> state11(char)
             ((char in 'a' .. 'z') || (char in 'A' .. 'Z')) -> state13(char)
             (char == '/')-> state15(char)
-            
+
             else-> state = 0
         }
 
@@ -96,10 +96,10 @@ class Automata(tp: TokenPrinter){
 
     fun state8(char: Char){
 
-            if(char == '='){
+        if(char == '='){
 
-                genToken.addToken(11, "|=")
-            }
+            genToken.addToken(11, "|=")
+        }
 
         state = 0
     }
@@ -166,15 +166,25 @@ class Automata(tp: TokenPrinter){
         if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
 
             token = token + char
-            state = 11
+            state = 13
 
         }
 
         if(char == ' '){
 
-            genToken.addToken(12, token) // identificadores/palabras reservadas
-            state = 0
-            token = ""
+            if(genToken.isKeyword(token)) {
+
+                genToken.addToken(16, token) // identificadores/palabras reservadas
+                state = 0
+                token = ""
+            }
+            else{
+
+                genToken.addToken(12, token) // identificadores/palabras reservadas
+                state = 0
+                token = ""
+
+            }
 
         }
 
@@ -196,7 +206,7 @@ class Automata(tp: TokenPrinter){
 
     fun state15(char: Char){
 
-      state = 16
+        state = 16
 
     }
 
