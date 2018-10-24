@@ -63,6 +63,10 @@ class TokenPrinter(){
         tokenList.add(line)
     }
 
+    fun isKeyword(word: String): Boolean{
+        return keywords.contains(word)
+    }
+
     fun makeTokenFile(){
         File(tokenFileName).printWriter().use { out ->
             for(lines in tokenList){
