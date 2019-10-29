@@ -35,6 +35,7 @@ fun main() {
         }
     }
 
+    tp.makeOutputDir()
     if(errors > 0) tp.makeErrorFile()
     tp.makeTokenFile()
     tp.makeSymbolTable()

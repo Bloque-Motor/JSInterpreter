@@ -31,7 +31,7 @@ class TokenPrinter {
                 line = "<string, $token>"
             }
             8, 9, 10, 11, 15, 16->{
-                line = "<$token, }>"
+                line = "<$token, >"
             }
             12->{
                 if(!identifiers.contains(token)) identifiers.add(token)
@@ -83,6 +83,11 @@ class TokenPrinter {
                 out.println("-------------------------")
             }
         }
+    }
+
+    fun makeOutputDir() {
+        val outDir = File("/Output/")
+        outDir.mkdirs()
     }
 
     init {
