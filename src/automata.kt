@@ -16,11 +16,9 @@ class Automata(tp: TokenPrinter){
             7-> state7(char)
             8-> state8(char)
             9-> state9(char)
-//          10-> state10(char)
             11-> state11(char)
             12-> state12(char)
             13-> state13(char)
-//          14-> state14(char)
             15-> state15(char)
             16-> state16(char)
             17-> state17(char)
@@ -28,7 +26,6 @@ class Automata(tp: TokenPrinter){
     }
 
     private fun state0(char: Char){
-
         when{
             (char == '+')-> {
                 state = 1
@@ -74,95 +71,68 @@ class Automata(tp: TokenPrinter){
                 state = 15
                 state15(char)
             }
-
             else-> state = 0
         }
-
-
     }
 
     private fun state1(char: Char){
-
         genToken.addToken(8, char.toString())
         state = 0
-
     }
 
     private fun state2(char: Char){
-
         genToken.addToken(9, char.toString())
         state = 0
-
     }
 
     private fun state3(char: Char){
-
         genToken.addToken(10, char.toString())
         state = 0
-
     }
 
     private fun state4(char: Char){
-
         genToken.addToken(11, char.toString())
         state = 0
-
     }
 
     private fun state5(char: Char){
-
         genToken.addToken(15, char.toString())
         state = 0
-
     }
 
     private fun state6(char: Char){
-
         genToken.addToken(15, char.toString())
         state = 0
-
     }
 
     private fun state7(char: Char){
-
         state = 8
-
     }
 
     private fun state8(char: Char){
-
         if(char == '='){
-
             genToken.addToken(11, "-=")
         }else{
             genToken.addToken(8, "-")
-
         }
-
         state = 0
     }
 
     private fun state9(char: Char){
-
         when{
-
             (char in '0'..'9')-> {
                 token += char
                 state = 9
             }
-
             ((char in 'a'..'z') || (char in 'A'..'Z'))-> {
                 token = ""
                 state = 0
                 throw Exception("Bad lexeme")
-
             }
-
             else-> {
                 genToken.addToken(2, token)
                 token = ""
                 state = 0
-
                 when{
                     (char == '+')-> {
                         state = 1
@@ -193,38 +163,21 @@ class Automata(tp: TokenPrinter){
                         state0(char)
                     }
                 }
-
             }
-
-
-
         }
-
     }
 
-/*    private fun state10(char: Char){
-
-        //NO HACE FALTA
-
-    }*/
-
     private fun state11(char: Char){
-
         state = 12
         token += char
-
     }
 
     private fun state12(char: Char){
-
         if(char != '\''){
-
             token += char
             state = 12
         }
-
         else{
-
             token += char
             if (token.length > 66) throw Exception("String too long")
             genToken.addToken(3, token)
@@ -234,20 +187,14 @@ class Automata(tp: TokenPrinter){
     }
 
     private fun state13(char: Char){
-
         if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
-
             token += char
             state = 13
-
         }else{
-
             if(genToken.isKeyword(token)) {
-
                 genToken.addToken(16, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
-
                 when{
                     (char == '+')-> state1(char)
                     (char == '<')-> state2(char)
@@ -256,13 +203,10 @@ class Automata(tp: TokenPrinter){
                     (char == '(')-> state5(char)
                     (char == ')')-> state6(char)
                 }
-
             }else{
-
                 genToken.addToken(12, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
-
                 when{
                     (char == '+')-> state1(char)
                     (char == '<')-> state2(char)
@@ -271,30 +215,15 @@ class Automata(tp: TokenPrinter){
                     (char == '(')-> state5(char)
                     (char == ')')-> state6(char)
                 }
-
             }
-
         }
-
-
     }
-
-/*
-    private fun state14(char: Char){
-
-
-        //no  hace falta
-    }
-*/
 
     private fun state15(char: Char){
-
         state = 16
-
     }
 
     private fun state16(char: Char){
-
         when{
             (char == '/') -> {
                 state = 17

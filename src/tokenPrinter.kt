@@ -2,9 +2,9 @@ import java.io.File
 
 class TokenPrinter {
 
-    val tokenFileName = """Output\Tokens.txt"""
-    val symbolTableFile = """Output\SymbolTable.txt"""
-    val errorFile = """Output\Errors.txt"""
+    private val tokenFileName = """Output\Tokens.txt"""
+    private val symbolTableFile = """Output\SymbolTable.txt"""
+    private val errorFile = """Output\Errors.txt"""
 
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
@@ -13,12 +13,10 @@ class TokenPrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
-    var strings = mutableListOf<String>()
     var identifiers = mutableListOf<String>()
     var tokenList = mutableListOf<String>()
     var errors = mutableListOf<String>()
-    //var declarations = mutableListOf<String>()
-    //var logicLit = mutableListOf<String>()
+
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -32,33 +30,12 @@ class TokenPrinter {
             3->{
                 line = "<string, $token>"
             }
-/*          4->{}//Newline
-            5->{}//Tab
-            6->{}//Quotes escape: \"
-            7->{}//Logical literal (true/false). Included in 16 for now */
-            8->{
+            8, 9, 10, 11, 15, 16->{
                 line = "<$token, }>"
-            }
-            9->{
-                line = "<relationOp, ${relationOps.indexOf(token)}>"
-            }
-            10->{
-                line = "<logicOp, ${logicOps.indexOf(token)}>"
-            }
-            11->{
-                line = "<assignment, ${assignments.indexOf(token)}>"
             }
             12->{
                 if(!identifiers.contains(token)) identifiers.add(token)
                 line = "<id, ${identifiers.indexOf(token)}>"
-            }
-/*          13->{} //Declarations. Included in 16 for now
-            14->{} //Variable types. Included in 16 for now  */
-            15->{
-                line = "<$token, }>"
-            }
-            16->{
-                line = "<$token, }>"
             }
         }
         tokenList.add(line)
@@ -73,29 +50,29 @@ class TokenPrinter {
     }
 
     fun makeErrorFile(){
-        var ef = File(errorFile)
+        val ef = File(errorFile)
         ef.createNewFile()
         ef.printWriter().use { out ->
             for(lines in errors){
-                out.println("$lines")
+                out.println(lines)
             }
 
         }
     }
 
     fun makeTokenFile(){
-        var tf = File(tokenFileName)
+        val tf = File(tokenFileName)
         tf.createNewFile()
         tf.printWriter().use { out ->
             for(lines in tokenList){
-                out.println("$lines")
+                out.println(lines)
             }
 
         }
     }
 
     fun makeSymbolTable(){
-        var sf = File(symbolTableFile)
+        val sf = File(symbolTableFile)
         sf.createNewFile()
         sf.printWriter().use { out ->
             out.println("TABLA DE IDENTIFICADORES #1:")
@@ -147,6 +124,5 @@ class TokenPrinter {
             relationOps.add(line)
         }
     }
-
 }
 
