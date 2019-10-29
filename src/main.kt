@@ -2,7 +2,7 @@ import java.io.File
 import java.lang.Exception
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>) {
+fun main() {
     var tp = TokenPrinter()
     var at = Automata(tp)
     println("Enter filename to parse:")

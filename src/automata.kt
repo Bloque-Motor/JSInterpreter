@@ -16,11 +16,11 @@ class Automata(tp: TokenPrinter){
             7-> state7(char)
             8-> state8(char)
             9-> state9(char)
-//            10-> state10(char)
+//          10-> state10(char)
             11-> state11(char)
             12-> state12(char)
             13-> state13(char)
-//            14-> state14(char)
+//          14-> state14(char)
             15-> state15(char)
             16-> state16(char)
             17-> state17(char)
@@ -62,7 +62,7 @@ class Automata(tp: TokenPrinter){
                 state = 9
                 state9(char)
             }
-            (char == '"' )-> {
+            (char == '\'' )-> {
                 state = 11
                 state11(char)
             }
@@ -217,7 +217,7 @@ class Automata(tp: TokenPrinter){
 
     private fun state12(char: Char){
 
-        if(char != '"'){
+        if(char != '\''){
 
             token += char
             state = 12
@@ -226,6 +226,7 @@ class Automata(tp: TokenPrinter){
         else{
 
             token += char
+            if (token.length > 66) throw Exception("String too long")
             genToken.addToken(3, token)
             state = 0
             token = ""

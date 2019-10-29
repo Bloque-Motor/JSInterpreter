@@ -1,6 +1,6 @@
 import java.io.File
 
-class TokenPrinter(){
+class TokenPrinter {
 
     val tokenFileName = """Output\Tokens.txt"""
     val symbolTableFile = """Output\SymbolTable.txt"""
@@ -73,7 +73,9 @@ class TokenPrinter(){
     }
 
     fun makeErrorFile(){
-        File(errorFile).printWriter().use { out ->
+        var ef = File(errorFile)
+        ef.createNewFile()
+        ef.printWriter().use { out ->
             for(lines in errors){
                 out.println("$lines")
             }
@@ -82,7 +84,9 @@ class TokenPrinter(){
     }
 
     fun makeTokenFile(){
-        File(tokenFileName).printWriter().use { out ->
+        var tf = File(tokenFileName)
+        tf.createNewFile()
+        tf.printWriter().use { out ->
             for(lines in tokenList){
                 out.println("$lines")
             }
@@ -91,7 +95,9 @@ class TokenPrinter(){
     }
 
     fun makeSymbolTable(){
-        File(symbolTableFile).printWriter().use { out ->
+        var sf = File(symbolTableFile)
+        sf.createNewFile()
+        sf.printWriter().use { out ->
             out.println("TABLA DE IDENTIFICADORES #1:")
             out.println()
             for (line in identifiers){
