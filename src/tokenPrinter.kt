@@ -37,7 +37,7 @@ class TokenPrinter(){
             6->{}//Quotes escape: \"
             7->{}//Logical literal (true/false). Included in 16 for now */
             8->{
-                line = "<ariOp, ${ariOps.indexOf(token)}>"
+                line = "<$token, }>"
             }
             9->{
                 line = "<relationOp, ${relationOps.indexOf(token)}>"
@@ -55,10 +55,10 @@ class TokenPrinter(){
 /*          13->{} //Declarations. Included in 16 for now
             14->{} //Variable types. Included in 16 for now  */
             15->{
-                line = "<delimiter, ${delimiters.indexOf(token)}>"
+                line = "<$token, }>"
             }
             16->{
-                line = "<keyword, ${keywords.indexOf(token)}>"
+                line = "<$token, }>"
             }
         }
         tokenList.add(line)

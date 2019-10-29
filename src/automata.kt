@@ -1,6 +1,3 @@
-import java.lang.Exception
-import javax.xml.stream.events.Comment
-
 class Automata(tp: TokenPrinter){
 
     var state = 0
@@ -26,10 +23,11 @@ class Automata(tp: TokenPrinter){
 //            14-> state14(char)
             15-> state15(char)
             16-> state16(char)
+            17-> state17(char)
         }
     }
 
-    fun state0(char: Char){
+    private fun state0(char: Char){
 
         when{
             (char == '+')-> {
@@ -56,7 +54,7 @@ class Automata(tp: TokenPrinter){
                 state = 6
                 state6(char)
             }
-            (char == '|')-> {
+            (char == '-')-> {
                 state = 7
                 state7(char)
             }
@@ -85,57 +83,42 @@ class Automata(tp: TokenPrinter){
 
     private fun state1(char: Char){
 
-        genToken.addToken(8, Character.toString(char))
+        genToken.addToken(8, char.toString())
         state = 0
 
     }
 
     private fun state2(char: Char){
 
-        genToken.addToken(9, Character.toString(char))
+        genToken.addToken(9, char.toString())
         state = 0
 
-        /*when(char){
-            '<' -> token = token + char
-            '=' ->{
-                token = token + char
-                genToken.addToken(9, token)
-                token = ""
-                state = 0
-            }
-            else ->{
-                genToken.addToken(9, token)
-                token = ""
-                state = 0
-                state0(char)
-            }
-        }*/
     }
 
     private fun state3(char: Char){
 
-        genToken.addToken(10, Character.toString(char))
+        genToken.addToken(10, char.toString())
         state = 0
 
     }
 
     private fun state4(char: Char){
 
-        genToken.addToken(11, Character.toString(char))
+        genToken.addToken(11, char.toString())
         state = 0
 
     }
 
     private fun state5(char: Char){
 
-        genToken.addToken(15, Character.toString(char))
+        genToken.addToken(15, char.toString())
         state = 0
 
     }
 
     private fun state6(char: Char){
 
-        genToken.addToken(15, Character.toString(char))
+        genToken.addToken(15, char.toString())
         state = 0
 
     }
@@ -150,7 +133,10 @@ class Automata(tp: TokenPrinter){
 
         if(char == '='){
 
-            genToken.addToken(11, "|=")
+            genToken.addToken(11, "-=")
+        }else{
+            genToken.addToken(8, "-")
+
         }
 
         state = 0
@@ -161,7 +147,7 @@ class Automata(tp: TokenPrinter){
         when{
 
             (char in '0'..'9')-> {
-                token = token + char
+                token += char
                 state = 9
             }
 
@@ -173,19 +159,9 @@ class Automata(tp: TokenPrinter){
             }
 
             else-> {
-
-                if(token.toInt() < 32767) {
-                    genToken.addToken(2, token)
-                    token = ""
-                    state = 0
-
-                }
-                else{
-                    token = ""
-                    state = 0
-                    throw Exception("Bad lexeme")
-
-                }
+                genToken.addToken(2, token)
+                token = ""
+                state = 0
 
                 when{
                     (char == '+')-> {
@@ -235,7 +211,7 @@ class Automata(tp: TokenPrinter){
     private fun state11(char: Char){
 
         state = 12
-        token = token + char
+        token += char
 
     }
 
@@ -243,13 +219,13 @@ class Automata(tp: TokenPrinter){
 
         if(char != '"'){
 
-            token = token + char
+            token += char
             state = 12
         }
 
         else{
 
-            token = token + char
+            token += char
             genToken.addToken(3, token)
             state = 0
             token = ""
@@ -260,7 +236,7 @@ class Automata(tp: TokenPrinter){
 
         if((char in 'a' .. 'z') || (char in 'A' .. 'Z') || (char == '_') || (char in '0' .. '9')){
 
-            token = token + char
+            token += char
             state = 13
 
         }else{
@@ -318,13 +294,29 @@ class Automata(tp: TokenPrinter){
 
     private fun state16(char: Char){
 
-        if(char == '/'){
-
-            genToken.addToken(1, "//")
-
+        when{
+            (char == '/') -> {
+                state = 17
+                token = ""
+            }
+            (char in '0' .. '9') -> {
+                genToken.addToken(8, "/")
+                state = 9
+                state9(char)
+            }
+            else -> {
+                state = 0
+                throw Exception("Bad lexeme")
+            }
         }
+    }
 
-        state = 0
-        throw Exception("comment")
+    private fun state17(char: Char){
+        if(char == '\n'){
+            state = 0
+            genToken.addToken(1, token)
+        }else {
+            token += char
+        }
     }
 }
