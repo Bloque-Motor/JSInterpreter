@@ -13,7 +13,6 @@ class Automata(tp: TokenPrinter){
             4-> state4(char)
             5-> state5(char)
             6-> state6(char)
-            7-> state7(char)
             8-> state8(char)
             9-> state9(char)
             11-> state11(char)
@@ -27,7 +26,7 @@ class Automata(tp: TokenPrinter){
 
     private fun state0(char: Char){
         when{
-            (char == '+')-> {
+            ((char == '+') || (char == '*') || (char == '%'))-> {
                 state = 1
                 state1(char)
             }
@@ -52,8 +51,8 @@ class Automata(tp: TokenPrinter){
                 state6(char)
             }
             (char == '-')-> {
-                state = 7
-                state7(char)
+                state = 8
+                state8(char)
             }
             (char in '0'..'9')-> {
                 state = 9
@@ -103,10 +102,6 @@ class Automata(tp: TokenPrinter){
     private fun state6(char: Char){
         genToken.addToken(15, char.toString())
         state = 0
-    }
-
-    private fun state7(char: Char){
-        state = 8
     }
 
     private fun state8(char: Char){
@@ -245,6 +240,7 @@ class Automata(tp: TokenPrinter){
         if(char == '\n'){
             state = 0
             genToken.addToken(1, token)
+            token = ""
         }else {
             token += char
         }

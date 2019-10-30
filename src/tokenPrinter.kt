@@ -1,6 +1,6 @@
 import java.io.File
 
-class TokenPrinter {
+class TokenPrinter (workingDir: File){
 
     private val tokenFileName = """Output\Tokens.txt"""
     private val symbolTableFile = """Output\SymbolTable.txt"""
