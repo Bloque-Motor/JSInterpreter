@@ -52,7 +52,6 @@ class Automata(tp: TokenPrinter){
             }
             (char == '-')-> {
                 state = 8
-                state8(char)
             }
             (char in '0'..'9')-> {
                 state = 9
