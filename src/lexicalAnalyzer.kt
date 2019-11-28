@@ -1,4 +1,4 @@
-class Automata(tp: TokenPrinter){
+class LexicalAnalyzer(tp: TokenPrinter){
 
     var state = 0
     var token = ""

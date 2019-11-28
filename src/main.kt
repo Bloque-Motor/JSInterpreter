@@ -13,7 +13,7 @@ fun main() {
         exitProcess(-1)
     }
     var tp = TokenPrinter(file.parentFile)
-    var at = Automata(tp)
+    var la = LexicalAnalyzer(tp)
 
     println("$fileName found. Reading file...")
     println()
@@ -24,9 +24,9 @@ fun main() {
         try {
             var currentLine = line.toCharArray()
             for (char in currentLine) {
-                at.process(char)
+                la.process(char)
             }
-            at.process('\n')
+            la.process('\n')
         } catch (e: Exception) {
             if(e.message == "comment") continue@loop
             errors++

@@ -22,7 +22,7 @@ class TokenPrinter (workingDir: File){
         var line = ""
         when(type){
             1->{
-                line = "<comment, $token>"
+                return
             }
             2-> {
                 line = "<number, $token>"
