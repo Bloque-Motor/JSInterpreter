@@ -30,10 +30,10 @@ class TokenPrinter (workingDir: File){
             3->{
                 line = "<string, $token>"
             }
-            8, 9, 10, 11, 15, 16->{
+            4->{
                 line = "<$token, >"
             }
-            12->{
+            5->{
                 if(!identifiers.contains(token)) identifiers.add(token)
                 line = "<id, ${identifiers.indexOf(token)}>"
             }

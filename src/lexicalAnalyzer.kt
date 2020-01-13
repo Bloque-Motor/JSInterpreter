@@ -1,24 +1,19 @@
 class LexicalAnalyzer(tp: TokenPrinter){
 
-    var state = 0
-    var token = ""
-    var genToken = tp
+    private var state = 0
+    private var token = ""
+    private var genToken = tp
+    private val uniCharTk = charArrayOf('+', '*', '%', '<', '!', '=', '(', ')', '{', '}')
 
     fun process(char: Char){
         when(state){
             0-> state0(char)
             1-> state1(char)
-            2-> state2(char)
-            3-> state3(char)
-            4-> state4(char)
-            5-> state5(char)
-            6-> state6(char)
             8-> state8(char)
             9-> state9(char)
             11-> state11(char)
             12-> state12(char)
             13-> state13(char)
-            15-> state15(char)
             16-> state16(char)
             17-> state17(char)
         }
@@ -26,29 +21,9 @@ class LexicalAnalyzer(tp: TokenPrinter){
 
     private fun state0(char: Char){
         when{
-            ((char == '+') || (char == '*') || (char == '%'))-> {
+            (uniCharTk.contains(char))-> {
                 state = 1
                 state1(char)
-            }
-            (char == '<')-> {
-                state = 2
-                state2(char)
-            }
-            (char == '!')-> {
-                state = 3
-                state3(char)
-            }
-            (char == '=')-> {
-                state = 4
-                state4(char)
-            }
-            (char == '(')-> {
-                state = 5
-                state5(char)
-            }
-            (char == ')')-> {
-                state = 6
-                state6(char)
             }
             (char == '-')-> {
                 state = 8
@@ -66,48 +41,23 @@ class LexicalAnalyzer(tp: TokenPrinter){
                 state13(char)
             }
             (char == '/')-> {
-                state = 15
-                state15(char)
+                state = 16
+                state16(char)
             }
             else-> state = 0
         }
     }
 
     private fun state1(char: Char){
-        genToken.addToken(8, char.toString())
-        state = 0
-    }
-
-    private fun state2(char: Char){
-        genToken.addToken(9, char.toString())
-        state = 0
-    }
-
-    private fun state3(char: Char){
-        genToken.addToken(10, char.toString())
-        state = 0
-    }
-
-    private fun state4(char: Char){
-        genToken.addToken(11, char.toString())
-        state = 0
-    }
-
-    private fun state5(char: Char){
-        genToken.addToken(15, char.toString())
-        state = 0
-    }
-
-    private fun state6(char: Char){
-        genToken.addToken(15, char.toString())
+        genToken.addToken(4, char.toString())
         state = 0
     }
 
     private fun state8(char: Char){
         if(char == '='){
-            genToken.addToken(11, "-=")
+            genToken.addToken(4, "-=")
         }else{
-            genToken.addToken(8, "-")
+            genToken.addToken(4, "-")
         }
         state = 0
     }
@@ -124,38 +74,16 @@ class LexicalAnalyzer(tp: TokenPrinter){
                 throw Exception("Bad lexeme")
             }
             else-> {
-                genToken.addToken(2, token)
-                token = ""
-                state = 0
-                when{
-                    (char == '+')-> {
-                        state = 1
-                        state1(char)
-                    }
-                    (char == '<')-> {
-                        state = 2
-                        state2(char)
-                    }
-                    (char == '!')-> {
-                        state = 3
-                        state3(char)
-                    }
-                    (char == '=')-> {
-                        state = 4
-                        state4(char)
-                    }
-                    (char == '(')-> {
-                        state = 5
-                        state5(char)
-                    }
-                    (char == ')')-> {
-                        state = 6
-                        state6(char)
-                    }
-                    else -> {
-                        state = 0
-                        state0(char)
-                    }
+                if(token.toInt() <= 32767) {
+                    genToken.addToken(2, token)
+                    token = ""
+                    state = 0
+                    state0(char)
+                }
+                else{
+                    token = ""
+                    state = 0
+                    throw Exception("Bad lexeme")
                 }
             }
         }
@@ -186,35 +114,17 @@ class LexicalAnalyzer(tp: TokenPrinter){
             state = 13
         }else{
             if(genToken.isKeyword(token)) {
-                genToken.addToken(16, token) // identificadores/palabras reservadas
+                genToken.addToken(4, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
-                when{
-                    (char == '+')-> state1(char)
-                    (char == '<')-> state2(char)
-                    (char == '!')-> state3(char)
-                    (char == '=')-> state4(char)
-                    (char == '(')-> state5(char)
-                    (char == ')')-> state6(char)
-                }
+                state0(char)
             }else{
-                genToken.addToken(12, token) // identificadores/palabras reservadas
+                genToken.addToken(5, token) // identificadores/palabras reservadas
                 state = 0
                 token = ""
-                when{
-                    (char == '+')-> state1(char)
-                    (char == '<')-> state2(char)
-                    (char == '!')-> state3(char)
-                    (char == '=')-> state4(char)
-                    (char == '(')-> state5(char)
-                    (char == ')')-> state6(char)
-                }
+                state0(char)
             }
         }
-    }
-
-    private fun state15(char: Char){
-        state = 16
     }
 
     private fun state16(char: Char){
@@ -224,7 +134,7 @@ class LexicalAnalyzer(tp: TokenPrinter){
                 token = ""
             }
             (char in '0' .. '9') -> {
-                genToken.addToken(8, "/")
+                genToken.addToken(4, "/")
                 state = 9
                 state9(char)
             }
