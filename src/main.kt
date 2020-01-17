@@ -6,13 +6,14 @@ fun main() {
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
+    var tokenStream = mutableListOf<Token>()
     var lines = 0
     var errors = 0
     if (!file.exists()) {
         println("$fileName does not exist.")
         exitProcess(-1)
     }
-    var tp = TokenPrinter(file.parentFile)
+    var tp = TokenPrinter(tokenStream)
     var la = LexicalAnalyzer(tp)
 
     println("$fileName found. Reading file...")
