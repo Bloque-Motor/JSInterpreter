@@ -1,2 +1,4 @@
-class Token {
+class Token(var type: String, var value: String) {
+
+
 }
