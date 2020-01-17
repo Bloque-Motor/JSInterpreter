@@ -1,36 +1,38 @@
 class syntaxAnalyzer {
 
     enum class States {
-        Z, A, B, D, E, C, F, G, H, J, K, L, M, N, O, Q, R, S, T, U, W, X, P
+        P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1
     }
 
-    var state = States.Z;
+    var state = States.P;
+    var stack: MutableList<Any> = mutableListOf()
 
     fun process(token: Token){
         when(state){
-            States.Z -> stateZ(token)
-            States.A-> stateA(token)
+            States.P -> stateP(token)
             States.B-> stateB(token)
-            States.D-> stateD(token)
-            States.E-> stateE(token)
+            States.B1-> stateB1(token)
+            States.T-> stateT(token)
+            States.S-> stateS(token)
+            States.S1-> stateS1(token)
+            States.S2-> stateS2(token)
+            States.S3-> stateS3(token)
+            States.S4-> stateS4(token)
+            States.X-> stateX(token)
             States.C-> stateC(token)
             States.F-> stateF(token)
-            States.G-> stateG(token)
             States.H-> stateH(token)
-            States.J-> stateJ(token)
+            States.A-> stateA(token)
             States.K-> stateK(token)
             States.L-> stateL(token)
-            States.M-> stateM(token)
-            States.N-> stateN(token)
-            States.O-> stateO(token)
             States.Q-> stateQ(token)
+            States.E-> stateE(token)
             States.R-> stateR(token)
-            States.S-> stateS(token)
-            States.T-> stateT(token)
             States.U-> stateU(token)
-            States.W-> stateW(token)
-            States.X-> stateX(token)
-            States.P-> stateP(token)
+            States.U1-> stateU1(token)
+            States.U2-> stateU2(token)
+            States.V-> stateV(token)
+            States.V1-> stateV1(token)
         }
     }
 
@@ -38,15 +40,11 @@ class syntaxAnalyzer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateX(token: Token) {
+    private fun stateB(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateW(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateU(token: Token) {
+    private fun stateB1(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -58,47 +56,23 @@ class syntaxAnalyzer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateR(token: Token) {
+    private fun stateS1(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateQ(token: Token) {
+    private fun stateS2(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateO(token: Token) {
+    private fun stateS3(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateN(token: Token) {
+    private fun stateS4(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateM(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateL(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateK(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateJ(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateH(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateG(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateF(token: Token) {
+    private fun stateX(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -106,15 +80,11 @@ class syntaxAnalyzer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateE(token: Token) {
+    private fun stateF(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateD(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun stateB(token: Token) {
+    private fun stateH(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -122,9 +92,44 @@ class syntaxAnalyzer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun stateZ(token: Token) {
+    private fun stateK(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    private fun stateL(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateQ(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateE(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateR(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateU(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateU1(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateU2(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateV(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun stateV1(token: Token) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
