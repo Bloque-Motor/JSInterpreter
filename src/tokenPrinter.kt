@@ -1,6 +1,6 @@
 import java.io.File
 
-class TokenPrinter {
+class TokenPrinter (workingDir: File){
 
     private val tokenFileName = """Output\Tokens.txt"""
     private val symbolTableFile = """Output\SymbolTable.txt"""
@@ -22,7 +22,7 @@ class TokenPrinter {
         var line = ""
         when(type){
             1->{
-                line = "<comment, $token>"
+                return
             }
             2-> {
                 line = "<number, $token>"
@@ -30,10 +30,10 @@ class TokenPrinter {
             3->{
                 line = "<string, $token>"
             }
-            8, 9, 10, 11, 15, 16->{
+            4->{
                 line = "<$token, >"
             }
-            12->{
+            5->{
                 if(!identifiers.contains(token)) identifiers.add(token)
                 line = "<id, ${identifiers.indexOf(token)}>"
             }

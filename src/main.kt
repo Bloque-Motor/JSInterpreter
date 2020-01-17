@@ -3,8 +3,6 @@ import java.lang.Exception
 import kotlin.system.exitProcess
 
 fun main() {
-    var tp = TokenPrinter()
-    var at = Automata(tp)
     println("Enter filename to parse:")
     val fileName: String? = readLine()
     val file = File(fileName)
@@ -14,6 +12,8 @@ fun main() {
         println("$fileName does not exist.")
         exitProcess(-1)
     }
+    var tp = TokenPrinter(file.parentFile)
+    var la = LexicalAnalyzer(tp)
 
     println("$fileName found. Reading file...")
     println()
@@ -24,9 +24,9 @@ fun main() {
         try {
             var currentLine = line.toCharArray()
             for (char in currentLine) {
-                at.process(char)
+                la.process(char)
             }
-            at.process('\n')
+            la.process('\n')
         } catch (e: Exception) {
             if(e.message == "comment") continue@loop
             errors++
