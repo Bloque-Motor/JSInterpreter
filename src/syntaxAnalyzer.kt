@@ -1,3 +1,5 @@
+import javax.swing.plaf.nimbus.State
+
 class syntaxAnalyzer {
 
     enum class States {
@@ -5,7 +7,7 @@ class syntaxAnalyzer {
     }
 
     var state = States.P;
-    var stack: MutableList<Any> = mutableListOf()
+    private var stack: Stack = Stack()
 
     fun process(token: Token){
         when(state){
@@ -38,6 +40,31 @@ class syntaxAnalyzer {
 
     private fun stateP(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (stack.peek() is Token) {
+            if (stack.peek() == token)
+                if (!stack.isEmpty()) stack.pop()
+        }
+        else {
+            when (token.type){
+                "var", "if", "while", "id", "return", "print", "input" -> {
+                    stack.pop()
+                    stack.push(States.P)
+                    stack.push(States.B)
+                }
+                "function" -> {
+                    stack.pop()
+                    stack.push(States.P)
+                    stack.push(States.F)
+                }
+                "Eof" -> {
+                    stack.pop()
+                    stack.push("Eof")
+                }
+
+            }
+        }
+
+
     }
 
     private fun stateB(token: Token) {
@@ -130,6 +157,20 @@ class syntaxAnalyzer {
 
     private fun stateV1(token: Token) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private class Stack{
+        val elements: MutableList<Any> = mutableListOf()
+
+        fun isEmpty() = elements.isEmpty()
+        fun size() = elements.size
+        fun push(item: Any) = elements.add(item)
+        fun pop() : Any? {
+            val item = elements.lastOrNull()
+            if (!isEmpty()) elements.removeAt(elements.size - 1)
+            return item
+        }
+        fun peek() : Any? = elements.lastOrNull()
     }
 
 }
