@@ -1,7 +1,7 @@
 import java.io.File
 import kotlin.collections.mutableListOf;
 
-class TokenPrinter (private val tokenStream: List<Token>){
+class TokenPrinter (){
 
     private val tokenFileName = """Output\Tokens.txt"""
     private val symbolTableFile = """Output\SymbolTable.txt"""
@@ -13,6 +13,9 @@ class TokenPrinter (private val tokenStream: List<Token>){
     var logicOps = mutableListOf<String>()
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
+
+    var tokenStream = mutableListOf<Token>()
+        get() = field
 
     var identifiers = mutableListOf<String>()
     var tokenList = mutableListOf<String>()
@@ -31,13 +34,17 @@ class TokenPrinter (private val tokenStream: List<Token>){
             }
             3->{
                 line = "<string, $token>"
+                tokenStream.add(Token("string", token))
             }
             4->{
                 line = "<$token, >"
+                tokenStream.add(Token(token, ""))
+
             }
             5->{
                 if(!identifiers.contains(token)) identifiers.add(token)
                 line = "<id, ${identifiers.indexOf(token)}>"
+                tokenStream.add(Token("id", identifiers.indexOf(token).toString()))
             }
         }
 

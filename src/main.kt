@@ -4,16 +4,16 @@ import kotlin.system.exitProcess
 
 fun main() {
     println("Enter filename to parse:")
+    var tokenStream = mutableListOf<Token>()
     val fileName: String? = readLine()
     val file = File(fileName)
-    var tokenStream = mutableListOf<Token>()
     var lines = 0
     var errors = 0
     if (!file.exists()) {
         println("$fileName does not exist.")
         exitProcess(-1)
     }
-    var tp = TokenPrinter(tokenStream)
+    var tp = TokenPrinter()
     var la = LexicalAnalyzer(tp)
 
     println("$fileName found. Reading file...")
@@ -40,6 +40,8 @@ fun main() {
     if(errors > 0) tp.makeErrorFile()
     tp.makeTokenFile()
     tp.makeSymbolTable()
+    tokenStream = tp.tokenStream
+
 
 
 }
