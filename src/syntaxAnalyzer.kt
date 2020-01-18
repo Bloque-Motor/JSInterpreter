@@ -1,5 +1,3 @@
-import javax.swing.plaf.nimbus.State
-
 class syntaxAnalyzer {
 
     enum class States {
@@ -8,6 +6,7 @@ class syntaxAnalyzer {
 
     var state = States.P;
     private var stack: Stack = Stack()
+    private var parse = mutableListOf<Int>()
 
     fun process(token: Token){
         when(state){
@@ -39,7 +38,6 @@ class syntaxAnalyzer {
     }
 
     private fun stateP(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         if (stack.peek() is Token) {
             if (stack.peek() == token)
                 if (!stack.isEmpty()) stack.pop()
@@ -48,17 +46,20 @@ class syntaxAnalyzer {
             when (token.type){
                 "var", "if", "while", "id", "return", "print", "input" -> {
                     stack.pop()
-                    stack.push(States.P)
                     stack.push(States.B)
+                    stack.push(States.P)
+                    parse.add(1)
                 }
                 "function" -> {
                     stack.pop()
-                    stack.push(States.P)
                     stack.push(States.F)
+                    stack.push(States.P)
+                    parse.add(2)
                 }
                 "Eof" -> {
                     stack.pop()
                     stack.push("Eof")
+                    parse.add(3)
                 }
 
             }
