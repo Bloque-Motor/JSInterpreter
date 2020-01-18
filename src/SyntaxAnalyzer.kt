@@ -163,27 +163,101 @@ class SyntaxAnalyzer (private val tokenStream: List<Token>) {
     }
 
     private fun stateK(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type) {
+            "," -> {
+                stack.pop()
+                stack.push(States.K)
+                stack.push(Token("id", ""))
+                stack.push(States.T)
+                stack.push(Token(",", ""))
+                parseOrder.add(35)
+            }
+            ")" -> {
+                stack.pop()
+                parseOrder.add(36)
+            }
+            else -> throw Exception("Syntax error. State K received ${token.type} token.")
+
+        }
     }
 
     private fun stateL(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type) {
+            "!", "id", "number", "(", "cadena", "false", "true" -> {
+                stack.pop()
+                stack.push(States.Q)
+                stack.push(States.E)
+                parseOrder.add(37)
+            }
+            ")" -> {
+                stack.pop()
+                parseOrder.add(38)
+            }
+            else -> throw Exception("Syntax error. State L received ${token.type} token.")
+        }
     }
 
     private fun stateQ(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       when (token.type) {
+           "," -> {
+               stack.pop()
+               stack.push(States.Q)
+               stack.push(States.E)
+               stack.push(Token(",",""))
+               parseOrder.add(39)
+           }
+           ")" -> {
+               stack.pop()
+               parseOrder.add(40)
+           }
+           else -> throw Exception("Syntax error. State Q received ${token.type} token.")
+       }
     }
 
     private fun stateE(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type){
+            "!" -> {
+                stack.pop()
+                stack.push(States.E)
+                stack.push(Token("!",""))
+                parseOrder.add(41)
+            }
+            "id", "number", "(", " cadena", "false", "true" -> {
+                stack.pop()
+                stack.push(States.R)
+                stack.push(States.U)
+                parseOrder.add(42)
+            }
+            else -> throw Exception("Syntax error. State E received ${token.type} token.")
+        }
     }
 
     private fun stateR(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type){
+            "<" -> {
+                stack.pop()
+                stack.push(States.U)
+                stack.push((Token("<","")))
+                parseOrder.add(43)
+            }
+            ")", ",", ";" -> {
+                stack.pop()
+                parseOrder.add((44))
+            }
+            else -> throw Exception("Syntax error. State R received ${token.type} token.")
+        }
     }
 
     private fun stateU(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       when (token.type) {
+           "id", "number", "(", "cadena", "false", "true" -> {
+               stack.pop()
+               stack.push(States.U2)
+               stack.push(States.V)
+               parseOrder.add(45)
+           }
+           else -> throw Exception("Syntax error. State U received ${token.type} token.")
+       }
     }
 
     private fun stateU1(token: Token) {
