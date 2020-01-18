@@ -55,30 +55,63 @@ class SyntaxAnalyzer (private val tokenStream: List<Token>) {
 
 
     private fun stateP(token: Token) {
-            when (token.type){
-                "var", "if", "while", "id", "return", "print", "input" -> {
-                    stack.pop()
-                    stack.push(States.P)
-                    stack.push(States.B)
-                    parseOrder.add(1)
-                }
-                "function" -> {
-                    stack.pop()
-                    stack.push(States.P)
-                    stack.push(States.F)
-                    parseOrder.add(2)
-                }
-                "eof" -> {
-                    stack.pop()
-                    stack.push("eof")
-                    parseOrder.add(3)
-                }
-                else -> throw Exception("Syntax error. State P received ${token.type} token.")
+        when (token.type){
+            "var", "if", "while", "id", "return", "print", "input" -> {
+                stack.pop()
+                stack.push(States.P)
+                stack.push(States.B)
+                parseOrder.add(1)
             }
+            "function" -> {
+                stack.pop()
+                stack.push(States.P)
+                stack.push(States.F)
+                parseOrder.add(2)
+            }
+            "eof" -> {
+                stack.pop()
+                stack.push("eof")
+                parseOrder.add(3)
+            }
+            else -> throw Exception("Syntax error. State P received ${token.type} token.")
+        }
     }
 
     private fun stateB(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type) {
+            "var" -> {
+                stack.pop()
+                stack.push(Token(";", ""))
+                stack.push(States.S2)
+                stack.push(States.T)
+                stack.push(Token("var",""))
+                parseOrder.add(4)
+            }
+            "if" -> {
+                stack.push(States.B1)
+                stack.push(Token(")", ""))
+                stack.push(States.E)
+                stack.push(Token("(", ""))
+                stack.push(Token("if", ""))
+                parseOrder.add(5)
+            }
+            "while" -> {
+                stack.pop()
+                stack.push(Token("}", ""))
+                stack.push(States.C)
+                stack.push(Token("{", ""))
+                stack.push(Token(")", ""))
+                stack.push(States.E)
+                stack.push(Token("(", ""))
+                stack.push(Token("while", ""))
+                parseOrder.add(6)
+            }
+            "id", "return", "print", "input" -> {
+                stack.pop()
+                stack.push(States.S)
+                parseOrder.add(7)
+            }
+        }
     }
 
     private fun stateB1(token: Token) {
@@ -182,5 +215,4 @@ class SyntaxAnalyzer (private val tokenStream: List<Token>) {
         }
         fun peek() : Any? = elements.lastOrNull()
     }
-
 }
