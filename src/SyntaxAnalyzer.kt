@@ -69,7 +69,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
             }
             "eof" -> {
                 stack.pop()
-                stack.push("eof")
+                stack.push(Token("eof",""))
                 parseOrder.add(3)
             }
             else -> throw Exception("Syntax error. State P received ${token.type} token.")
