@@ -33,8 +33,8 @@ class TokenPrinter {
                 tokenStream.add(Token("number", token))
             }
             3->{
-                line = "<string, $token>"
-                tokenStream.add(Token("string", token))
+                line = "<cadena, $token>"
+                tokenStream.add(Token("cadena", token))
             }
             4->{
                 line = "<$token, >"
