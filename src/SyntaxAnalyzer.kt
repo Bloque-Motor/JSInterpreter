@@ -1,71 +1,80 @@
-class syntaxAnalyzer {
+import java.lang.Exception
+
+class SyntaxAnalyzer (private val tokenStream: List<Token>) {
 
     enum class States {
         P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1
     }
 
-    var state = States.P;
     private var stack: Stack = Stack()
-    private var parse = mutableListOf<Int>()
+    private var parseOrder = mutableListOf<Int>()
 
-    fun process(token: Token){
-        when(state){
-            States.P -> stateP(token)
-            States.B-> stateB(token)
-            States.B1-> stateB1(token)
-            States.T-> stateT(token)
-            States.S-> stateS(token)
-            States.S1-> stateS1(token)
-            States.S2-> stateS2(token)
-            States.S3-> stateS3(token)
-            States.S4-> stateS4(token)
-            States.X-> stateX(token)
-            States.C-> stateC(token)
-            States.F-> stateF(token)
-            States.H-> stateH(token)
-            States.A-> stateA(token)
-            States.K-> stateK(token)
-            States.L-> stateL(token)
-            States.Q-> stateQ(token)
-            States.E-> stateE(token)
-            States.R-> stateR(token)
-            States.U-> stateU(token)
-            States.U1-> stateU1(token)
-            States.U2-> stateU2(token)
-            States.V-> stateV(token)
-            States.V1-> stateV1(token)
+    fun parse(){
+        var currentIndex = 0
+        var currentToken: Token
+        stack.push(States.P)
+        while(tokenStream.isNotEmpty()){
+            currentToken = tokenStream[currentIndex]
+            if (stack.peek() is Token) {
+                if ((stack.peek() as Token).type == currentToken.type) {
+                    stack.pop()
+                    currentIndex++
+                }else{
+                    throw Exception("Syntax Error on token $currentIndex. Expected \"${(stack.peek() as Token).type}\"")
+                }
+            }else{
+                when(stack.peek()){
+                    States.P -> stateP(currentToken)
+                    States.B-> stateB(currentToken)
+                    States.B1-> stateB1(currentToken)
+                    States.T-> stateT(currentToken)
+                    States.S-> stateS(currentToken)
+                    States.S1-> stateS1(currentToken)
+                    States.S2-> stateS2(currentToken)
+                    States.S3-> stateS3(currentToken)
+                    States.S4-> stateS4(currentToken)
+                    States.X-> stateX(currentToken)
+                    States.C-> stateC(currentToken)
+                    States.F-> stateF(currentToken)
+                    States.H-> stateH(currentToken)
+                    States.A-> stateA(currentToken)
+                    States.K-> stateK(currentToken)
+                    States.L-> stateL(currentToken)
+                    States.Q-> stateQ(currentToken)
+                    States.E-> stateE(currentToken)
+                    States.R-> stateR(currentToken)
+                    States.U-> stateU(currentToken)
+                    States.U1-> stateU1(currentToken)
+                    States.U2-> stateU2(currentToken)
+                    States.V-> stateV(currentToken)
+                    States.V1-> stateV1(currentToken)
+                }
+            }
         }
     }
 
+
     private fun stateP(token: Token) {
-        if (stack.peek() is Token) {
-            if (stack.peek() == token)
-                if (!stack.isEmpty()) stack.pop()
-        }
-        else {
             when (token.type){
                 "var", "if", "while", "id", "return", "print", "input" -> {
                     stack.pop()
-                    stack.push(States.B)
                     stack.push(States.P)
-                    parse.add(1)
+                    stack.push(States.B)
+                    parseOrder.add(1)
                 }
                 "function" -> {
                     stack.pop()
-                    stack.push(States.F)
                     stack.push(States.P)
-                    parse.add(2)
+                    stack.push(States.F)
+                    parseOrder.add(2)
                 }
-                "Eof" -> {
+                "eof" -> {
                     stack.pop()
-                    stack.push("Eof")
-                    parse.add(3)
+                    stack.push("eof")
+                    parseOrder.add(3)
                 }
-
+                else -> throw Exception("Syntax error. State P received ${token.type} token.")
             }
-        }
-
-
     }
 
     private fun stateB(token: Token) {

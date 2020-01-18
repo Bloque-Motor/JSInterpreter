@@ -1,7 +1,7 @@
 import java.io.File
 import kotlin.collections.mutableListOf;
 
-class TokenPrinter (){
+class TokenPrinter {
 
     private val tokenFileName = """Output\Tokens.txt"""
     private val symbolTableFile = """Output\SymbolTable.txt"""
