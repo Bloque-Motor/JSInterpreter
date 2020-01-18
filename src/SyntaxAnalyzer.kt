@@ -7,11 +7,11 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
     private var stack: Stack = Stack()
     private var parseOrder = mutableListOf<Int>()
 
-    fun parse() {
+    fun parse(): MutableList<Int> {
         var currentIndex = 0
         var currentToken: Token
         stack.push(States.P)
-        while (tokenStream.isNotEmpty()) {
+        while (currentIndex < tokenStream.size) {
             currentToken = tokenStream[currentIndex]
             if (stack.peek() is Token) {
                 if ((stack.peek() as Token).type == currentToken.type) {
@@ -49,6 +49,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 }
             }
         }
+        return parseOrder
     }
 
 
@@ -147,6 +148,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
             "boolean" -> {
                 stack.pop()
                 stack.push(Token("boolean", ""))
+                parseOrder.add(12)
             }
             else -> throw Exception("Syntax error. State T  received ${token.type} token.")
         }

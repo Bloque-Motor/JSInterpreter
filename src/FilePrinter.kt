@@ -1,11 +1,11 @@
 import java.io.File
-import kotlin.collections.mutableListOf;
 
-class TokenPrinter {
+class FilePrinter {
 
     private val tokenFileName = """Output\Tokens.txt"""
     private val symbolTableFile = """Output\SymbolTable.txt"""
     private val errorFile = """Output\Errors.txt"""
+    private val parseFileName = """Output\ParseFile.txt"""
 
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
@@ -100,6 +100,18 @@ class TokenPrinter {
         outDir.mkdirs()
     }
 
+    fun makeParseFile(parseOrder: MutableList<Int>) {
+        val pf = File(parseFileName)
+        pf.createNewFile()
+        pf.printWriter().use { out ->
+            out.print("D")
+            for(lines in parseOrder){
+                out.print(" $lines")
+            }
+
+        }
+    }
+
     init {
         val assignmentsFile = File("tkns/assignments.txt")
         val delimiterFile = File("tkns/delimiter.txt")
@@ -139,5 +151,5 @@ class TokenPrinter {
             relationOps.add(line)
         }
     }
-}
 
+}

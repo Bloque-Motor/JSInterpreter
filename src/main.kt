@@ -12,8 +12,8 @@ fun main() {
         println("$fileName does not exist.")
         exitProcess(-1)
     }
-    var tp = TokenPrinter()
-    var la = LexicalAnalyzer(tp)
+    var fp = FilePrinter()
+    var la = LexicalAnalyzer(fp)
 
     println("$fileName found. Reading file...")
     println()
@@ -30,19 +30,21 @@ fun main() {
         } catch (e: Exception) {
             if(e.message == "comment") continue@loop
             errors++
-            tp.addError("Error at line $lines: ${e.message}")
+            fp.addError("Error at line $lines: ${e.message}")
             continue@loop
         }
     }
 
-    tp.makeOutputDir()
-    if(errors > 0) tp.makeErrorFile()
-    tp.makeTokenFile()
-    tp.makeSymbolTable()
-    tokenStream = tp.tokenStream
+    fp.makeOutputDir()
+    if(errors > 0) fp.makeErrorFile()
+    fp.makeTokenFile()
+    fp.makeSymbolTable()
+    tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
     var sa = SyntaxAnalyzer(tokenStream)
-    sa.parse()
+    var parseOrder = sa.parse()
+    fp.makeParseFile(parseOrder)
+
 
 
 
