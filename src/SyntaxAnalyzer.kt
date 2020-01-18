@@ -480,6 +480,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 stack.push(Token("%", ""))
                 parseOrder.add(50)
             }
+            else -> throw Exception("Syntax error. State U1 received ${token.type} token.")
         }
     }
 
@@ -495,6 +496,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 stack.pop()
                 parseOrder.add(52)
             }
+            else -> throw Exception("Syntax error. State U2 received ${token.type} token.")
         }
 
     }
