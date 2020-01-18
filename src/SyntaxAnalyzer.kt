@@ -187,19 +187,110 @@ class SyntaxAnalyzer (private val tokenStream: List<Token>) {
     }
 
     private fun stateU1(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when(token.type){
+            "+" -> {
+                stack.pop()
+                stack.push(States.V)
+                stack.push(Token("+", ""))
+                parseOrder.add(46)
+            }
+            "-" -> {
+                stack.pop()
+                stack.push(States.V)
+                stack.push(Token("-", ""))
+                parseOrder.add(47)
+            }
+            "*" -> {
+                stack.pop()
+                stack.push(States.V)
+                stack.push(Token("*", ""))
+                parseOrder.add(48)
+            }
+            "/" -> {
+                stack.pop()
+                stack.push(States.V)
+                stack.push(Token("/", ""))
+                parseOrder.add(49)
+            }
+            "%" -> {
+                stack.pop()
+                stack.push(States.V)
+                stack.push(Token("%", ""))
+                parseOrder.add(50)
+            }
+        }
     }
 
     private fun stateU2(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when(token.type){
+            "+","-","*","/","%" -> {
+                stack.pop()
+                stack.push(States.U2)
+                stack.push(States.U1)
+                parseOrder.add(51)
+            }
+            "<",")",",",";" -> {
+                stack.pop()
+                parseOrder.add(52)
+            }
+        }
+
     }
 
     private fun stateV(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type){
+            "id" -> {
+                stack.pop()
+                stack.push(States.V1)
+                stack.push(Token("id", ""))
+                parseOrder.add(53)
+            }
+            "number"->{
+                stack.pop()
+                stack.push(Token("number", ""))
+                parseOrder.add(54)
+            }
+            "(" ->{
+                stack.pop()
+                stack.push(Token("(", ""))
+                stack.push(States.E)
+                stack.push(Token(")", ""))
+                parseOrder.add(55)
+            }
+            "cadena" -> {
+                stack.pop()
+                stack.push(Token("cadena", ""))
+                parseOrder.add(56)
+            }
+            "false" -> {
+                stack.pop()
+                stack.push(Token("false", ""))
+                parseOrder.add(57)
+            }
+            "true" -> {
+                stack.pop()
+                stack.push(Token("true", ""))
+                parseOrder.add(58)
+            }
+            else -> throw Exception("Syntax error. State V received ${token.type} token.")
+        }
     }
 
     private fun stateV1(token: Token) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (token.type) {
+            "(" -> {
+                stack.pop()
+                stack.push(Token(")", ""))
+                stack.push(States.L)
+                stack.push(Token("(",""))
+                parseOrder.add(59)
+            }
+            "+","-","*","/","%","<",",",";" -> {
+                stack.pop()
+                parseOrder.add(60)
+            }
+            else -> throw Exception("Syntax error. State V1 received ${token.type} token.")
+        }
     }
 
     private class Stack{
