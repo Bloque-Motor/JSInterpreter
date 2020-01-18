@@ -1,5 +1,4 @@
 import java.io.File
-import java.lang.Exception
 import kotlin.system.exitProcess
 
 fun main() {
@@ -41,6 +40,9 @@ fun main() {
     tp.makeTokenFile()
     tp.makeSymbolTable()
     tokenStream = tp.tokenStream
+    tokenStream.add(Token("eof", ""))
+    var sa = SyntaxAnalyzer(tokenStream)
+    sa.parse()
 
 
 
