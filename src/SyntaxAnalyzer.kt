@@ -9,8 +9,11 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
     private var aux: Stack = Stack()
 
     private var stackAux: Stack = Stack()
+    private var inVariableDeclaration = false
     private var inFunctionDeclaration = false
-    private var auxType = ""
+    private var inVariableAssignment = false
+    private var leftOfAssignment: Int = -1
+    private var auxType :Identifier.Type? = null
     private var auxReturn = ""
 
 
@@ -93,7 +96,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(States.T)
                 stack.push(Token("var", ""))
                 parseOrder.add(4)
-                inFunctionDeclaration = true
+                inVariableDeclaration = true
             }
             "if" -> {
                 stack.pop()
@@ -149,9 +152,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(Token("int", ""))
                 parseOrder.add(10)
 
-                if(inFunctionDeclaration){
-                    stackAux.push("int")
-                    auxType = "int"
+                if(inVariableDeclaration){
+                    auxType = Identifier.Type.INT
                 }
             }
             "string" -> {
@@ -159,9 +161,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(Token("string", ""))
                 parseOrder.add(11)
 
-                if(inFunctionDeclaration){
-                    stackAux.push("String")
-                    auxType = "String"
+                if(inVariableDeclaration){
+                    auxType = Identifier.Type.STRING
                 }
             }
             "boolean" -> {
@@ -169,9 +170,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(Token("boolean", ""))
                 parseOrder.add(12)
 
-                if(inFunctionDeclaration){
-                    stackAux.push("boolean")
-                    auxType = "boolean"
+                if(inVariableDeclaration){
+                    auxType = Identifier.Type.BOOLEAN
                 }
             }
             else -> throw Exception("Syntax error. State T  received ${token.type} token.")
@@ -185,6 +185,14 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(States.S1)
                 stack.push(Token("id", ""))
                 parseOrder.add(13)
+
+                inVariableAssignment = true
+                if(symbolTable[token.value.toInt()].type == null){
+                    throw Exception("Semantic error: ${symbolTable[token.value.toInt()].lex} is not defined.")
+                }else{
+                    stackAux.push(symbolTable[token.value.toInt()].type!!)
+                    leftOfAssignment = token.value.toInt()
+                }
             }
             "return" -> {
                 stack.pop()
@@ -251,7 +259,13 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(Token("id", ""))
                 parseOrder.add(20)
 
-                if()
+                inVariableAssignment = true
+                if(symbolTable[token.value.toInt()].type == null){
+                    symbolTable[token.value.toInt()].type = auxType
+                    leftOfAssignment = token.value.toInt()
+                }else{
+                    throw Exception("Semantic error. Variable ${symbolTable[token.value.toInt()].lex} is already defined in the scope.")
+                }
             }
             else -> throw Exception("Syntax error. State S2 received ${token.type} token.")
         }
@@ -291,6 +305,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
             ";" -> {
                 stack.pop()
                 parseOrder.add(25)
+                inVariableDeclaration = false
+                auxType = null
             }
             else -> throw Exception("Syntax error. State S4 received ${token.type} token.")
         }
@@ -536,6 +552,12 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(States.V1)
                 stack.push(Token("id", ""))
                 parseOrder.add(53)
+
+                if(symbolTable[token.value.toInt()].type == null){
+                    throw Exception("Semantic error: ${symbolTable[token.value.toInt()].lex} is not defined.")
+                }else{
+                    stackAux.push(symbolTable[token.value.toInt()].type!!)
+                }
             }
             "number"->{
                 stack.pop()
