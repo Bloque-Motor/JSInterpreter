@@ -10,11 +10,6 @@ class Identifier (val id: Int,val lex: String){
         set(value) {
             field = value
         }
-    var value: Any? = null
-        get() = field
-        set(value) {
-            field = value
-        }
     var parameterCount = 0
     var parameterList = mutableListOf<Type>()
 

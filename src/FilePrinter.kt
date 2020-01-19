@@ -124,12 +124,6 @@ class FilePrinter {
                         Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
                         Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
                     }
-                    out.print("  + valor: '")
-                    if(symbol.value != null) {
-                        out.println(symbol.value.toString())
-                    }else{
-                        out.println("null'")
-                    }
                 }
                 out.println("  + id: ${symbol.id}")
                 out.println("-------------------------")

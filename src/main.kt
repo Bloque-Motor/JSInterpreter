@@ -35,17 +35,22 @@ fun main() {
             continue@loop
         }
     }
-
-    fp.makeOutputDir()
-    if(errors > 0) fp.makeErrorFile()
-    fp.makeTokenFile()
     symbolTable = fp.symbolTable
     tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
     var sa = SyntaxAnalyzer(tokenStream, symbolTable)
-    var parseOrder = sa.parse()
+    var parseOrder = mutableListOf<Int>()
+    try {
+        parseOrder = sa.parse()
+        fp.symbolTable = sa.symbolTable as MutableList<Identifier>
+    }catch (e: Exception){
+        fp.addError(e.message!!)
+        errors++
+    }
+    fp.makeOutputDir()
+    fp.makeTokenFile()
     fp.makeParseFile(parseOrder)
-    fp.symbolTable = sa.symbolTable as MutableList<Identifier>
+    if(errors > 0) fp.makeErrorFile()
     fp.makeSymbolTableFile()
 
 
