@@ -3,7 +3,8 @@ import kotlin.system.exitProcess
 
 fun main() {
     println("Enter filename to parse:")
-    var tokenStream = mutableListOf<Token>()
+    var tokenStream: MutableList<Token>
+    var symbolTable: MutableList<Identifier>
     val fileName: String? = readLine()
     val file = File(fileName)
     var lines = 0
@@ -38,12 +39,14 @@ fun main() {
     fp.makeOutputDir()
     if(errors > 0) fp.makeErrorFile()
     fp.makeTokenFile()
-    fp.makeSymbolTable()
+    symbolTable = fp.symbolTable
     tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
-    var sa = SyntaxAnalyzer(tokenStream)
+    var sa = SyntaxAnalyzer(tokenStream, symbolTable)
     var parseOrder = sa.parse()
     fp.makeParseFile(parseOrder)
+    fp.symbolTable = sa.symbolTable as MutableList<Identifier>
+    fp.makeSymbolTableFile()
 
 
 

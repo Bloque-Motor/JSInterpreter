@@ -1,4 +1,4 @@
-class SyntaxAnalyzer(private val tokenStream: List<Token>) {
+class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List<Identifier>) {
 
     enum class States {
         P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1
@@ -6,6 +6,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
 
     private var stack: Stack = Stack()
     private var parseOrder = mutableListOf<Int>()
+    private var aux: Stack = Stack()
 
     fun parse(): MutableList<Int> {
         var currentIndex = 0
@@ -49,6 +50,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 }
             }
         }
+
         return parseOrder
     }
 

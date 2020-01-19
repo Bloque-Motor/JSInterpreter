@@ -1,0 +1,25 @@
+class Identifier (val id: Int,val lex: String){
+    enum class Type {FUNCTION, INT, BOOLEAN, STRING}
+    var type: Type? = null
+        get() = field
+        set(value) {
+            field = value
+        }
+    var returnType: Type? = null
+        get() = field
+        set(value) {
+            field = value
+        }
+    var value: Any? = null
+        get() = field
+        set(value) {
+            field = value
+        }
+    var parameterCount = 0
+    var parameterList = mutableListOf<Type>()
+
+    fun addParameter(type: Type){
+        parameterList.add(type)
+        parameterCount++
+    }
+}
