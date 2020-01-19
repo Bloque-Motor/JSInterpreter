@@ -14,8 +14,14 @@ class FilePrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
+    var symbolTable = mutableListOf<Identifier>()
+        get() = field
+        set(value) {
+            field = value
+        }
     var tokenStream = mutableListOf<Token>()
         get() = field
+    var auxSymbolMap = HashMap<String, Int>()
 
     var identifiers = mutableListOf<String>()
     var tokenList = mutableListOf<String>()
@@ -42,7 +48,11 @@ class FilePrinter {
 
             }
             5->{
-                if(!identifiers.contains(token)) identifiers.add(token)
+                if (!auxSymbolMap.containsKey(token)){
+                    var symbol = Identifier(symbolTable.size, token)
+                    auxSymbolMap.put(token, symbolTable.size)
+                    symbolTable.add(symbol)
+                }
                 line = "<id, ${identifiers.indexOf(token)}>"
                 tokenStream.add(Token("id", identifiers.indexOf(token).toString()))
             }
@@ -81,15 +91,48 @@ class FilePrinter {
         }
     }
 
-    fun makeSymbolTable(){
+    fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
         sf.createNewFile()
         sf.printWriter().use { out ->
             out.println("TABLA DE IDENTIFICADORES #1:")
             out.println()
-            for (line in identifiers){
-                out.println("* LEXEMA : '$line'")
+            for (symbol in symbolTable){
+                out.println("* LEXEMA : '${symbol.lex}'")
                 out.println("  ATRIBUTOS :")
+                if(symbol.type == Identifier.Type.FUNCTION){
+                    out.println("  + tipo: 'funcion'")
+                    when(symbol.returnType){
+                        Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
+                        else->out.println("  + tipoRetorno: 'void'")
+                    }
+                    var params = ""
+                    for (param in symbol.parameterList){
+                        when(param){
+                            Identifier.Type.INT -> params += "entero, "
+                            Identifier.Type.BOOLEAN -> params += "logico, "
+                            Identifier.Type.STRING -> params += "cadena, "
+                        }
+                    }
+                    params = params.dropLast(2)
+                    out.println("  + tipoParametros: '$params'")
+                    out.println("  + numParametros: '${symbol.parameterCount}'")
+                }else{
+                    when(symbol.type){
+                        Identifier.Type.INT -> out.println("  + tipo: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
+                    }
+                    out.print("  + valor: '")
+                    if(symbol.value != null) {
+                        out.println(symbol.value.toString())
+                    }else{
+                        out.println("null'")
+                    }
+                }
+                out.println("  + id: ${symbol.id}")
                 out.println("-------------------------")
             }
         }
