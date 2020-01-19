@@ -412,7 +412,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 stack.push(Token("!",""))
                 parseOrder.add(41)
             }
-            "id", "number", "(", " cadena", "false", "true" -> {
+            "id", "number", "(", "cadena", "false", "true" -> {
                 stack.pop()
                 stack.push(States.R)
                 stack.push(States.U)
@@ -551,7 +551,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>) {
                 stack.push(Token("(",""))
                 parseOrder.add(59)
             }
-            "+","-","*","/","%","<",",",";" -> {
+            "+","-","*","/","%","<",",",";",")" -> {
                 stack.pop()
                 parseOrder.add(60)
             }
