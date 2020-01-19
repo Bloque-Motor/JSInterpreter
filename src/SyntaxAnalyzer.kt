@@ -8,6 +8,12 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
     private var parseOrder = mutableListOf<Int>()
     private var aux: Stack = Stack()
 
+    private var stackAux: Stack = Stack()
+    private var inFunctionDeclaration = false
+    private var auxType = ""
+    private var auxReturn = ""
+
+
     fun parse(): MutableList<Int> {
         var currentIndex = 0
         var currentToken: Token
@@ -87,6 +93,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(States.T)
                 stack.push(Token("var", ""))
                 parseOrder.add(4)
+                inFunctionDeclaration = true
             }
             "if" -> {
                 stack.pop()
@@ -141,16 +148,31 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.pop()
                 stack.push(Token("int", ""))
                 parseOrder.add(10)
+
+                if(inFunctionDeclaration){
+                    stackAux.push("int")
+                    auxType = "int"
+                }
             }
             "string" -> {
                 stack.pop()
                 stack.push(Token("string", ""))
                 parseOrder.add(11)
+
+                if(inFunctionDeclaration){
+                    stackAux.push("String")
+                    auxType = "String"
+                }
             }
             "boolean" -> {
                 stack.pop()
                 stack.push(Token("boolean", ""))
                 parseOrder.add(12)
+
+                if(inFunctionDeclaration){
+                    stackAux.push("boolean")
+                    auxType = "boolean"
+                }
             }
             else -> throw Exception("Syntax error. State T  received ${token.type} token.")
         }
@@ -228,6 +250,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
                 stack.push(States.S3)
                 stack.push(Token("id", ""))
                 parseOrder.add(20)
+
+                if()
             }
             else -> throw Exception("Syntax error. State S2 received ${token.type} token.")
         }
