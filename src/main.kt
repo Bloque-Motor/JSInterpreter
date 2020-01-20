@@ -13,8 +13,8 @@ fun main() {
         println("$fileName does not exist.")
         exitProcess(-1)
     }
-    var fp = FilePrinter()
-    var la = LexicalAnalyzer(fp)
+    val fp = FilePrinter()
+    val la = LexicalAnalyzer(fp)
 
     println("$fileName found. Reading file...")
     println()
@@ -38,11 +38,11 @@ fun main() {
     symbolTable = fp.symbolTable
     tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
-    var sa = SyntaxAnalyzer(tokenStream, symbolTable)
+    val ssa = SyntaxSemanticAnalyzer(tokenStream, symbolTable)
     var parseOrder = mutableListOf<Int>()
     try {
-        parseOrder = sa.parse()
-        fp.symbolTable = sa.symbolTable as MutableList<Identifier>
+        parseOrder = ssa.parse()
+        fp.symbolTable = ssa.symbolTable as MutableList<Identifier>
     }catch (e: Exception){
         fp.addError(e.message!!)
         errors++
@@ -52,9 +52,5 @@ fun main() {
     fp.makeParseFile(parseOrder)
     if(errors > 0) fp.makeErrorFile()
     fp.makeSymbolTableFile()
-
-
-
-
 }
 
