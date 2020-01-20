@@ -721,6 +721,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         for (type in typeListAux) {
                             if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
                         }
+                        typeListAux = mutableListOf()
                     }
 
                     checkingBooleanExpression = false
