@@ -1,5 +1,5 @@
 class Identifier (val id: Int,val lex: String){
-    enum class Type {FUNCTION, INT, BOOLEAN, STRING}
+    enum class Type {FUNCTION, INT, BOOLEAN, STRING, VOID}
     var type: Type? = null
         get() = field
         set(value) {
