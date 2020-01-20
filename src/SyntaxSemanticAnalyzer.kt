@@ -493,6 +493,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             ")", ","->{
                 stack.pop()
                 parseOrder.add(44)
+
+                if (checkingBooleanExpression) checkingBooleanExpression = false
             }
             ";" -> {
                 stack.pop()
@@ -647,9 +649,14 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("(",""))
                 parseOrder.add(59)
             }
-            "+","-","*","/","%","<",",",")" -> {
+            "+","-","*","/","%","<","," -> {
                 stack.pop()
                 parseOrder.add(60)
+            }
+            ")" -> {
+                stack.pop()
+                parseOrder.add(60)
+                if (checkingBooleanExpression) checkingBooleanExpression = false
             }
             ";"->{
                 stack.pop()
