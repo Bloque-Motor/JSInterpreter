@@ -33,7 +33,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         symbolTable[parsingFunctionId].returnType = returnType
                         inFunctionDeclaration = false
                         returnType = null
-                        inFunctionParametrization = true
                     }
                     if (inFunctionParametrization && currentToken.type =="id"){
                         symbolTable[currentToken.value.toInt()].type = auxType
@@ -427,6 +426,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("id", ""))
                 stack.push(States.T)
                 parseOrder.add(33)
+
+                inFunctionParametrization = true
             }
             ")" -> {
                 stack.pop()
