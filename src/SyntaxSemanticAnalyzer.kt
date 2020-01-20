@@ -42,6 +42,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                     }
                     stack.pop()
                     currentIndex++
+                    println(currentIndex)
                 } else {
                     throw Exception("Syntax Error on token $currentIndex. Expected \"${(stack.peek() as Token).type}\"")
                 }
@@ -515,7 +516,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         for (type in typeListAux) {
                             if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
                         }
-                        typeListAux = mutableListOf()
                     }
                 }
             }
@@ -535,7 +535,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 parseOrder.add(44)
 
-                if (checkingBooleanExpression) checkingBooleanExpression = false
+                if (checkingBooleanExpression){
+                    checkingBooleanExpression = false
+                    typeListAux = mutableListOf()
+                }
             }
             ";" -> {
                 stack.pop()
@@ -700,7 +703,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             ")" -> {
                 stack.pop()
                 parseOrder.add(60)
-                if (checkingBooleanExpression) checkingBooleanExpression = false
+                if (checkingBooleanExpression){
+                    checkingBooleanExpression = false
+                    typeListAux = mutableListOf()
+                }
             }
             ";"->{
                 stack.pop()
