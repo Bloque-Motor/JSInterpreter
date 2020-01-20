@@ -12,6 +12,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     private var inVariableAssignment = false
     private var checkingBooleanExpression = false
     private var inFunctionParametrization = false
+    private var inReturnStatement = false
 
     private var parsingFunctionId = -1
     private var curlyBraceLevel = 0
@@ -351,6 +352,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(States.E)
                 parseOrder.add(26)
+
+                inReturnStatement = true
             }
             ";" -> {
                 stack.pop()
