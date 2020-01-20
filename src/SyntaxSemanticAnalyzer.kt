@@ -30,6 +30,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 if ((stack.peek() as Token).type == currentToken.type) {
                     if(inFunctionDeclaration && currentToken.type == "id"){
                         parsingFunctionId = currentToken.value.toInt()
+                        symbolTable[parsingFunctionId].type = Identifier.Type.FUNCTION
                         symbolTable[parsingFunctionId].returnType = returnType
                         inFunctionDeclaration = false
                         returnType = null
@@ -40,6 +41,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                     }
                     stack.pop()
                     currentIndex++
+                    println(currentIndex)
                 } else {
                     throw Exception("Syntax Error on token $currentIndex. Expected \"${(stack.peek() as Token).type}\"")
                 }
@@ -375,6 +377,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 parseOrder.add(29)
                 curlyBraceLevel--
+                if (parsingFunctionId != -1 && curlyBraceLevel == 0) parsingFunctionId = -1
             }
             else -> throw Exception("Syntax error. State C received ${token.type} token.")
         }
@@ -525,16 +528,18 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 parseOrder.add(44)
 
-                inVariableAssignment = false
-                leftOfAssignment = -1
-
-                var leftType: Identifier.Type?
-                if(typeListAux.isNotEmpty()){
-                    leftType = symbolTable[leftOfAssignment].type
-                    for(type in typeListAux){
-                        if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
+                if(inVariableAssignment){
+                    var leftType: Identifier.Type?
+                    if(typeListAux.isNotEmpty()){
+                        leftType = symbolTable[leftOfAssignment].type
+                        for(type in typeListAux){
+                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
+                        }
                     }
                 }
+
+                inVariableAssignment = false
+                leftOfAssignment = -1
             }
             else -> throw Exception("Syntax error. State R received ${token.type} token.")
         }
