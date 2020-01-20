@@ -1,3 +1,2 @@
-var int patata = 7;
-patata -= 4;
-return patata;
+var int a = 1;
+if (a < 4) return true;
