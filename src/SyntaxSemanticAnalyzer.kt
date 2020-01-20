@@ -11,6 +11,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     private var inVariableDeclaration = false
     private var inFunctionDeclaration = false
     private var inVariableAssignment = false
+    private var checkingBooleanExpression = false
     private var leftOfAssignment = -1
     private var auxType :Identifier.Type? = null
     private var auxReturn = ""
@@ -105,6 +106,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("(", ""))
                 stack.push(Token("if", ""))
                 parseOrder.add(5)
+                checkingBooleanExpression = true
             }
             "while" -> {
                 stack.pop()
@@ -116,6 +118,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("(", ""))
                 stack.push(Token("while", ""))
                 parseOrder.add(6)
+                checkingBooleanExpression = true
             }
             "id", "return", "print", "input" -> {
                 stack.pop()
@@ -465,6 +468,15 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.R)
                 stack.push(States.U)
                 parseOrder.add(42)
+
+                if (checkingBooleanExpression) {
+                    if (listAux.size > 1) {
+                        var leftType: Identifier.Type = listAux[0]
+                        for (type in listAux) {
+                            if (leftType != type) throw Exception("Semantic error: type missmatch. Expected $leftType found $type.")
+                        }
+                    }
+                }
             }
             else -> throw Exception("Syntax error. State E received ${token.type} token.")
         }
