@@ -1,1 +1,1 @@
-if (1 < true) return true;
+if (true) return 'hola' + 'casa';

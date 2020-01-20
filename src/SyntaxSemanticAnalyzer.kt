@@ -593,30 +593,40 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.V)
                 stack.push(Token("+", ""))
                 parseOrder.add(46)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "-" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("-", ""))
                 parseOrder.add(47)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "*" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("*", ""))
                 parseOrder.add(48)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "/" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("/", ""))
                 parseOrder.add(49)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "%" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("%", ""))
                 parseOrder.add(50)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             else -> throw Exception("Syntax error. State U1 received ${token.type} token.")
         }
