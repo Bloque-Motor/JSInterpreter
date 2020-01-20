@@ -623,9 +623,24 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.U1)
                 parseOrder.add(51)
             }
-            "<", ")", "," -> {
+            "<", "," -> {
                 stack.pop()
                 parseOrder.add(52)
+            }
+            ")" -> {
+                stack.pop()
+                parseOrder.add(52)
+
+                if (checkingBooleanExpression) {
+                    if (typeListAux.size == 1 && typeListAux[0] != Identifier.Type.BOOLEAN) {
+                        var type = typeListAux[0]
+                        throw Exception("Semantic error: type mismatch. Expected Boolean found $type.")
+                    } else {
+                        checkingBooleanExpression = false
+                        typeListAux = mutableListOf()
+                    }
+                }
+
             }
             ";" -> {
                 stack.pop()
