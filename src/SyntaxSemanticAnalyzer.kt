@@ -35,6 +35,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         returnType = null
                         inFunctionParametrization = true
                     }
+                    if (inFunctionParametrization && currentToken.type =="id"){
+                        symbolTable[currentToken.value.toInt()].type = auxType
+                        auxType = null
+                    }
                     stack.pop()
                     currentIndex++
                 } else {
@@ -166,7 +170,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
 
                 if(inVariableDeclaration) auxType = Identifier.Type.INT
                 if(inFunctionDeclaration) returnType = Identifier.Type.INT
-                if(inFunctionParametrization) symbolTable[parsingFunctionId].addParameter(Identifier.Type.INT)
+                if(inFunctionParametrization) {
+                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.INT)
+                    auxType = Identifier.Type.INT
+                }
             }
             "string" -> {
                 stack.pop()
@@ -175,6 +182,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
 
                 if(inVariableDeclaration) auxType = Identifier.Type.STRING
                 if(inFunctionDeclaration) returnType = Identifier.Type.STRING
+                if(inFunctionParametrization) {
+                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.STRING)
+                    auxType = Identifier.Type.STRING
+                }
 
             }
             "boolean" -> {
@@ -184,6 +195,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
 
                 if(inVariableDeclaration) auxType = Identifier.Type.BOOLEAN
                 if(inFunctionDeclaration) returnType = Identifier.Type.BOOLEAN
+                if(inFunctionParametrization) {
+                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.BOOLEAN)
+                    auxType = Identifier.Type.BOOLEAN
+                }
             }
             else -> throw Exception("Syntax error. State T  received ${token.type} token.")
         }
@@ -512,11 +527,11 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 inVariableAssignment = false
                 leftOfAssignment = -1
 
-                var leftType: Identifier.Type
+                var leftType: Identifier.Type?
                 if(typeListAux.isNotEmpty()){
-                    leftType = typeListAux[0]
+                    leftType = symbolTable[leftOfAssignment].type
                     for(type in typeListAux){
-                        if (leftType != type) throw Exception("Semantic error: type missmatch. Expected $leftType found $type.")
+                        if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
                     }
                 }
             }
