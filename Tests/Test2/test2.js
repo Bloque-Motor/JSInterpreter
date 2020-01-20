@@ -1,7 +1,7 @@
 function int test2(int i, boolean ok){
     var int num;
     input(num);
-    while(!ok){
+    while(i < 'patata'){
         num -= i;
         if (num < ok) ok = true;
     }

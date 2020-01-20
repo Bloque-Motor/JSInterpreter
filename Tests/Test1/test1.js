@@ -1,2 +1,3 @@
-var int a = 1;
-if (a < 4) return true;
+var int a = 4;
+var int b = a + 2;
+while (a<b) { print(false);}
