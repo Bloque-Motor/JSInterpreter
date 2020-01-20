@@ -23,7 +23,6 @@ class FilePrinter {
         get() = field
     var auxSymbolMap = HashMap<String, Int>()
 
-    var identifiers = mutableListOf<String>()
     var tokenList = mutableListOf<String>()
     var errors = mutableListOf<String>()
 
@@ -53,8 +52,8 @@ class FilePrinter {
                     auxSymbolMap.put(token, symbolTable.size)
                     symbolTable.add(symbol)
                 }
-                line = "<id, ${identifiers.indexOf(token)}>"
-                tokenStream.add(Token("id", identifiers.indexOf(token).toString()))
+                line = "<id, ${auxSymbolMap.get(token)}>"
+                tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
             }
         }
 
@@ -124,12 +123,6 @@ class FilePrinter {
                         Identifier.Type.INT -> out.println("  + tipo: 'entero'")
                         Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
                         Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
-                    }
-                    out.print("  + valor: '")
-                    if(symbol.value != null) {
-                        out.println(symbol.value.toString())
-                    }else{
-                        out.println("null'")
                     }
                 }
                 out.println("  + id: ${symbol.id}")
