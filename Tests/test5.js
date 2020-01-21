@@ -1,6 +1,6 @@
-function boolen test5 (string name, int age, boolean isClient){
+function boolean test5 (string name, int age, boolean isClient){
     if (!isClient) isClient = true;
-    var string = 'underage';
+    var string  u = 'underage';
     while (age < 18){
         print(name);
         print(u);

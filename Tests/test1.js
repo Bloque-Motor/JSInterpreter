@@ -3,4 +3,4 @@ function int suma(int i, int j) {
     return i + j;
 }
 
-c = suma(a, b);
+var int c = suma(a, b);

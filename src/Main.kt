@@ -53,4 +53,3 @@ fun main() {
     if(errors > 0) fp.makeErrorFile()
     fp.makeSymbolTableFile()
 }
-
