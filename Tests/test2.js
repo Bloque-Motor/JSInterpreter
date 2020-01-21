@@ -1,4 +1,4 @@
-function int test2(int i, boolean ok){
+function int test1(int i, boolean ok){
     var int num;
     input(num);
     while(i < 4){
