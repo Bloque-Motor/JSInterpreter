@@ -12,6 +12,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     private var inVariableAssignment = false
     private var checkingBooleanExpression = false
     private var inFunctionParametrization = false
+    private var inReturnStatement = false
+    private var comparingExpressions = false
 
     private var parsingFunctionId = -1
     private var curlyBraceLevel = 0
@@ -351,6 +353,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(States.E)
                 parseOrder.add(26)
+
+                inReturnStatement = true
             }
             ";" -> {
                 stack.pop()
@@ -515,6 +519,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         var leftType: Identifier.Type = typeListAux[typeListAux.size - 1]
                         for (type in typeListAux) {
                             if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
+                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
                         }
                     }
                 }
@@ -530,6 +535,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.U)
                 stack.push((Token("<", "")))
                 parseOrder.add(43)
+
+                if (inReturnStatement) comparingExpressions = true
             }
             ")", "," -> {
                 stack.pop()
@@ -586,30 +593,40 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.V)
                 stack.push(Token("+", ""))
                 parseOrder.add(46)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "-" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("-", ""))
                 parseOrder.add(47)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "*" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("*", ""))
                 parseOrder.add(48)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "/" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("/", ""))
                 parseOrder.add(49)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "%" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("%", ""))
                 parseOrder.add(50)
+
+                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             else -> throw Exception("Syntax error. State U1 received ${token.type} token.")
         }
@@ -636,6 +653,11 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         var type = typeListAux[0]
                         throw Exception("Semantic error: type mismatch. Expected Boolean found $type.")
                     } else {
+                        var leftType: Identifier.Type = typeListAux[0]
+                        for (type in typeListAux) {
+                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
+                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
+                        }
                         checkingBooleanExpression = false
                         typeListAux = mutableListOf()
                     }
@@ -735,6 +757,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         var leftType: Identifier.Type = typeListAux[0]
                         for (type in typeListAux) {
                             if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
+                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
                         }
                         typeListAux = mutableListOf()
                     }
