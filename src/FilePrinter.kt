@@ -2,10 +2,10 @@ import java.io.File
 
 class FilePrinter {
 
-    private val tokenFileName = """Output\Tokens.txt"""
-    private val symbolTableFile = """Output\SymbolTable.txt"""
-    private val errorFile = """Output\Errors.txt"""
-    private val parseFileName = """Output\ParseFile.txt"""
+    private val tokenFileName = """/Users/inigoar/Downloads/PDL/token.txt"""
+    private val symbolTableFile = """/Users/inigoar/Downloads/PDL/tablaSimbolos.txt"""
+    private val errorFile = """/Users/inigoar/Downloads/PDL/errores.txt"""
+    private val parseFileName = """/Users/inigoar/Downloads/PDL/parser.txt"""
 
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
