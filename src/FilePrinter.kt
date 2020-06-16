@@ -92,9 +92,11 @@ class FilePrinter {
 
     fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
+        var desplazamiento = 0 //variable desplazamiento para la TS
+        var tableNumber = 0 // numero identificador tabla
         sf.createNewFile()
         sf.printWriter().use { out ->
-            out.println("TABLA DE IDENTIFICADORES #1:")
+            out.println("TABLA DE IDENTIFICADORES #$tableNumber:")
             out.println()
             for (symbol in symbolTable){
                 out.println("* LEXEMA : '${symbol.lex}'")
