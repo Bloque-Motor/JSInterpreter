@@ -101,7 +101,7 @@ class FilePrinter {
         }
     }
 
-    fun makeSymbolTableFile() {
+    fun makeSymbolTableFile2() {
         val sf = File(symbolTableFile)
         var desplazamiento = 0 //variable desplazamiento para la TS
         var tableNumber = 1 // numero identificador tabla
@@ -112,52 +112,50 @@ class FilePrinter {
         var indexSymbol = 0
         var actualLexema = ""
         var actualTipo = ""
+        var i = 0
+        var chechFunc = false
 
         sf.createNewFile()
         sf.printWriter().use { out ->
             out.println("TABLA GLOBAL #$tableNumber:")
-            out.println()
             tableNumber++
             for (token in tokenStream) {
                     if(!checkFunction) {
                         if (token.type == "id") {
-                            out.println()
                             index = token.value.toInt()
-                            out.println("* LEXEMA : '${symbolTable[index].lex}'")
-                            out.println("  ATRIBUTOS :")
-                            when (symbolTable[index].type) {
-                                Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                                Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                                Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
-                            }
-                        } else if(isKeyword(token.type)){
-                            out.println()
-                            out.println("* LEXEMA : '${symbolTable[index].lex}'")
-                            out.println("  ATRIBUTOS :")
-                            if (token.type == "function") {
+
+                            if(symbolTable[index].type == Identifier.Type.FUNCTION){
+                                out.println()
+                                chechFunc = true
+                                out.println("* LEXEMA : '${symbolTable[index].lex}'")
+                                out.println("  ATRIBUTOS :")
                                 functionName = symbolTable[index].lex
-                                checkFunction = true
-                                out.println("  + tipo: 'funcion'")
                                 when (symbolTable[index].returnType) {
                                     Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
                                     Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
                                     Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
                                     else -> out.println("  + tipoRetorno: 'void'")
                                 }
+                                i++
                             }
-                            else{
+                            else {
+                                out.println()
+                                out.println("* LEXEMA : '${symbolTable[index].lex}'")
+                                out.println("  ATRIBUTOS :")
                                 when (symbolTable[index].type) {
                                     Identifier.Type.INT -> out.println("  + tipo: 'entero'")
                                     Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
                                     Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
                                 }
+                                i++
                             }
+
+                        } else if(token.type == "(" && chechFunc){
+                            numParam++
+                            checkFunction = true
                         }
                     }else{
-                        if(token.type == "("){
-                            numParam++
-                        }
-                        else if (token.type == ","){
+                        if (token.type == ","){
                             numParam++
                             var anid = TSAnidada()
                             anid.numTS = tableNumber
@@ -182,6 +180,7 @@ class FilePrinter {
                             functionName = ""
                             actualTipo = ""
                             checkFunction = false
+                            chechFunc = false
                             out.println("  + numParametros: '$numParam'")
                             tableNumber++
                             numParam = 0
@@ -201,7 +200,7 @@ class FilePrinter {
                     out.println()
                     out.println("-------------------------")
                     out.println()
-                    out.println("TABLA DE LA FUNCION ${word.funcName} # ${word.numTS}")
+                    out.println("TABLA DE LA FUNCION ${word.funcName} # ${word.numTS}:")
                     out.println()
                 }
                     actualNum = word.numTS
@@ -214,73 +213,47 @@ class FilePrinter {
         }
     }
 
-    fun makeSymbolTableFile2() {
+    fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
-        var desplazamiento = 0 //variable desplazamiento para la TS
-        var tableNumber = 1 // numero identificador tabla
-        var tablaGlobal = true
-        var functionName = ""
-        var symbolTableIterator = symbolTable.iterator()
-        var i = 0
         sf.createNewFile()
         sf.printWriter().use { out ->
-            out.println("TABLA GLOBAL #$tableNumber:")
+            out.println("TABLA DE IDENTIFICADORES #1:")
             out.println()
-            for (symbol in symbolTableIterator) {
-
-                if (tablaGlobal) {
-                    out.println("* LEXEMA : '${symbol.lex}'")
-                    out.println("  ATRIBUTOS :")
-                    if (symbol.type == Identifier.Type.FUNCTION) {
-                        out.println("  + tipo: 'funcion'")
-                        when (symbol.returnType) {
-                            Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
-                            Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-                            Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
-                            else -> out.println("  + tipoRetorno: 'void'")
-                        }
-                        var params = ""
-
-                        for (param in symbol.parameterList) {
-                            symbol.addParameter(param)
-
-                            when (param) {
-                                Identifier.Type.INT -> params += "entero, "
-                                Identifier.Type.BOOLEAN -> params += "logico, "
-                                Identifier.Type.STRING -> params += "cadena, "
-                            }
-                        }
-                        params = params.dropLast(2)
-                        out.println("  + tipoParametros: '$params'")
-                        out.println("  + numParametros: '${symbol.parameterCount}'")
-                        out.println("  + id: ${symbol.id}")
-                        tableNumber++
-                        tablaGlobal = false
-                        functionName = symbol.lex
-
-                    } else {
-                        when (symbol.type) {
-                            Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                            Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                            Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
-
-                        }
-                        out.println("  + id: ${symbol.id}")
+            for (symbol in symbolTable){
+                out.println("* LEXEMA : '${symbol.lex}'")
+                out.println("  ATRIBUTOS :")
+                if(symbol.type == Identifier.Type.FUNCTION){
+                    out.println("  + tipo: 'funcion'")
+                    when(symbol.returnType){
+                        Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
+                        else->out.println("  + tipoRetorno: 'void'")
                     }
-
-                    out.println("-------------------------")
-                } else {
-
-                    out.println("-------------------------")
-                    out.println("TABLA DE LA FUNCION $functionName # $tableNumber")
-                    out.println("* LEXEMA : '${symbolTable[0].lex}'")
-                    out.println("-------------------------")
-                    tablaGlobal = true
-
+                    var params = ""
+                    for (param in symbol.parameterList){
+                        when(param){
+                            Identifier.Type.INT -> params += "entero, "
+                            Identifier.Type.BOOLEAN -> params += "logico, "
+                            Identifier.Type.STRING -> params += "cadena, "
+                        }
+                    }
+                    params = params.dropLast(2)
+                    out.println("  + tipoParametros: '$params'")
+                    out.println("  + numParametros: '${symbol.parameterCount}'")
+                }else{
+                    when(symbol.type){
+                        Identifier.Type.INT -> out.println("  + tipo: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
+                    }
                 }
+                out.println("  + id: ${symbol.id}")
+                out.println("-------------------------")
             }
         }
     }
+
 
     fun makeOutputDir() {
         val outDir = File("/Output/")
