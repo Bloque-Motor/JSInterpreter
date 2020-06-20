@@ -35,14 +35,14 @@ fun main() {
             continue@loop
         }
     }
-    symbolTable = fp.symbolTable
+    symbolTable = fp.symbolTable.get("Global")!! as MutableList<Identifier>
     tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
-    val ssa = SyntaxSemanticAnalyzer(tokenStream, symbolTable)
+    val ssa = SyntaxAnalyzer(tokenStream, symbolTable)
     var parseOrder = mutableListOf<Int>()
     try {
         parseOrder = ssa.parse()
-        fp.symbolTable = ssa.symbolTable as MutableList<Identifier>
+        fp.symbolTable = ssa.symbolTable as MutableMap<String, List<Identifier>>
     }catch (e: Exception){
         fp.addError(e.message!!)
         errors++

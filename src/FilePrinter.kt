@@ -14,7 +14,7 @@ class FilePrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
-    var symbolTable = mutableListOf<Identifier>()
+    var symbolTable = mutableMapOf<String,List<Identifier>>()
         get() = field
         set(value) {
             field = value
@@ -26,17 +26,11 @@ class FilePrinter {
     var tokenList = mutableListOf<String>()
     var errors = mutableListOf<String>()
 
-    var anidadas = mutableListOf<TSAnidada>()
-
-    class TSAnidada{
-        var funcName = ""
-        var numTS = 0
-        var lexema = ""
-        var tipo = ""
-        var desplazamiento = 0
-
-    }
-
+    var boolFunction = false
+    var local = 0
+    var localLevel = "Global"
+    var localFunctionName = "Global"
+    var numId = 0
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -55,13 +49,47 @@ class FilePrinter {
             4->{
                 line = "<$token, >"
                 tokenStream.add(Token(token, ""))
+                if(token.equals("function")){
+                    boolFunction = true
+                }
 
+                if(boolFunction && token.equals("{")){
+                    local++
+                }
+
+                if(boolFunction && token.equals("}")){
+                    local--
+                    if(local == 0){
+                        boolFunction = false
+                        localFunctionName = "Global"
+                        numId = 0
+
+                    }
+                }
             }
             5->{
+
                 if (!auxSymbolMap.containsKey(token)){
+                    if(boolFunction){
+                        if(numId == 1) {
+                            localFunctionName = token
+                        }
+                        numId = 1
+                    }
+
                     var symbol = Identifier(symbolTable.size, token)
                     auxSymbolMap.put(token, symbolTable.size)
-                    symbolTable.add(symbol)
+                    var auxList = mutableListOf<Identifier>()
+                    if(symbolTable.containsKey(localFunctionName)){
+                       for(iden in symbolTable.get(localFunctionName)!!){
+                           auxList.add(iden)
+                       }
+                        auxList.add(symbol)
+                        symbolTable.put(localFunctionName, auxList)
+                    }else {
+                        auxList.add(symbol)
+                        symbolTable.put(localFunctionName, auxList)
+                    }
                 }
                 line = "<id, ${auxSymbolMap.get(token)}>"
                 tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
@@ -101,125 +129,14 @@ class FilePrinter {
         }
     }
 
-    fun makeSymbolTableFile2() {
+    fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
-        var desplazamiento = 0 //variable desplazamiento para la TS
-        var tableNumber = 1 // numero identificador tabla
-        var functionName = ""
-        var checkFunction = false
-        var index = 0
-        var numParam = 0
-        var indexSymbol = 0
-        var actualLexema = ""
-        var actualTipo = ""
-        var i = 0
-        var chechFunc = false
-
+        var tableNumber = 1
         sf.createNewFile()
         sf.printWriter().use { out ->
             out.println("TABLA GLOBAL #$tableNumber:")
-            tableNumber++
-            for (token in tokenStream) {
-                    if(!checkFunction) {
-                        if (token.type == "id") {
-                            index = token.value.toInt()
-
-                            if(symbolTable[index].type == Identifier.Type.FUNCTION){
-                                out.println()
-                                chechFunc = true
-                                out.println("* LEXEMA : '${symbolTable[index].lex}'")
-                                out.println("  ATRIBUTOS :")
-                                functionName = symbolTable[index].lex
-                                when (symbolTable[index].returnType) {
-                                    Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
-                                    Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-                                    Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
-                                    else -> out.println("  + tipoRetorno: 'void'")
-                                }
-                                i++
-                            }
-                            else {
-                                out.println()
-                                out.println("* LEXEMA : '${symbolTable[index].lex}'")
-                                out.println("  ATRIBUTOS :")
-                                when (symbolTable[index].type) {
-                                    Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                                    Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                                    Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
-                                }
-                                i++
-                            }
-
-                        } else if(token.type == "(" && chechFunc){
-                            numParam++
-                            checkFunction = true
-                        }
-                    }else{
-                        if (token.type == ","){
-                            numParam++
-                            var anid = TSAnidada()
-                            anid.numTS = tableNumber
-                            anid.funcName = functionName
-                            anid.desplazamiento = desplazamiento
-                            anid.lexema = actualLexema
-                            anid.tipo = actualTipo
-                            anidadas.add(anid)
-                            actualLexema = ""
-                            functionName = ""
-                            actualTipo = ""
-                        }
-                        else if(token.type == ")"){
-                            var anid2 = TSAnidada()
-                            anid2.numTS = tableNumber
-                            anid2.funcName = functionName
-                            anid2.desplazamiento = desplazamiento
-                            anid2.lexema = actualLexema
-                            anid2.tipo = actualTipo
-                            anidadas.add(anid2)
-                            actualLexema = ""
-                            functionName = ""
-                            actualTipo = ""
-                            checkFunction = false
-                            chechFunc = false
-                            out.println("  + numParametros: '$numParam'")
-                            tableNumber++
-                            numParam = 0
-                        }
-                        else if(token.type == "boolean" || token.type == "string" || token.type == "int"){
-                            actualTipo = token.type
-                        }
-                        else{
-                            indexSymbol = token.value.toInt()
-                            actualLexema = symbolTable[indexSymbol].lex
-                        }
-                    }
-            }
-            var actualNum = 0
-            for (word in anidadas){
-                if(actualNum == 0 || actualNum != word.numTS) {
-                    out.println()
-                    out.println("-------------------------")
-                    out.println()
-                    out.println("TABLA DE LA FUNCION ${word.funcName} # ${word.numTS}:")
-                    out.println()
-                }
-                    actualNum = word.numTS
-                    out.println("* LEXEMA : '${word.lexema}'")
-                    out.println("   + TIPO : '${word.tipo}'")
-                    out.println("   + DESPLAZAMIENTO : '${word.desplazamiento}'")
-                    out.println()
-            }
-            out.println("-------------------------")
-        }
-    }
-
-    fun makeSymbolTableFile(){
-        val sf = File(symbolTableFile)
-        sf.createNewFile()
-        sf.printWriter().use { out ->
-            out.println("TABLA DE IDENTIFICADORES #1:")
             out.println()
-            for (symbol in symbolTable){
+            for (symbol in symbolTable.get("Global")!!){
                 out.println("* LEXEMA : '${symbol.lex}'")
                 out.println("  ATRIBUTOS :")
                 if(symbol.type == Identifier.Type.FUNCTION){
@@ -251,6 +168,7 @@ class FilePrinter {
                 out.println("  + id: ${symbol.id}")
                 out.println("-------------------------")
             }
+            tableNumber++
         }
     }
 
