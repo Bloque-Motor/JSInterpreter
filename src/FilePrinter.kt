@@ -232,16 +232,12 @@ class FilePrinter {
         val sf = File(symbolTableFile)
         var tableNumber = 2
         var nombresTablas = mutableListOf<String>()
-        var j = 0
-
         sf.createNewFile()
         sf.printWriter().use { out ->
             if(symbolTable.isNotEmpty()) {
-
                 for (keyName in symbolTable) {
                     nombresTablas.add(keyName.key)
                 }
-
                 if (symbolTable.containsKey("Global")) {
                     nombresTablas.remove("Global")
                 //printer de la tabla de simbolos global
@@ -300,10 +296,6 @@ class FilePrinter {
                     }
                 }
             }
-            else{
-                out.println("La tabla está vacia")
-            }
-
         }
     }
 
