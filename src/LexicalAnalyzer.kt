@@ -3,6 +3,7 @@ class LexicalAnalyzer(fp: FilePrinter){
     private var state = 0
     private var token = ""
     private var genToken = fp
+    private var level = 0
     private val uniCharTk = charArrayOf('+', '*', '%', '<', '!', '=', '(', ')', '{', '}', ';', ',')
 
     fun process(char: Char){

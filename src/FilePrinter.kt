@@ -32,6 +32,8 @@ class FilePrinter {
     var functionName = ""
     var numId = 0
     var t = 0
+    var checkGlobal = true
+    var checkFunction = false
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -53,16 +55,25 @@ class FilePrinter {
                 if(token.equals("function")){
                     boolFunction = true
                 }
+                else if(token.equals("var")){
+                 checkGlobal = false
+                }
+                else if(token.equals(";")){
 
-                if(boolFunction && token.equals("{")){
+                    checkGlobal = true
+
+                }
+                else if(boolFunction && token.equals("{")){
                     local++
+                    checkFunction = true
                 }
 
-                if(boolFunction && token.equals("}")){
+                else if(boolFunction && token.equals("}")){
                     local--
                     if(local == 0){
                         boolFunction = false
                         localFunctionName = "Global"
+                        checkFunction = false
                         functionName = ""
                         numId = 0
 
@@ -71,33 +82,114 @@ class FilePrinter {
             }
             5->{
 
-                if (!auxSymbolMap.containsKey(token)){
-                    if(boolFunction){
-                        if(numId == 0) {
+                if(boolFunction){
+                    if(numId == 0) {
                             functionName = token
-                        }
-                        else if(numId == 1){
+                    }
+                    else if(numId == 1){
                             localFunctionName = functionName
-                        }
+                    }
                         numId++
                     }
 
-                    var symbol = Identifier(t, token)
-                    auxSymbolMap.put(token, t)
-                    var auxList = mutableListOf<Identifier>()
-
-                    if(symbolTable.containsKey(localFunctionName)){
-                       for(iden in symbolTable.get(localFunctionName)!!){
-                           auxList.add(iden)
-                       }
-                        auxList.add(symbol)
-                        symbolTable.put(localFunctionName, auxList)
-                    }else {
-                        auxList.add(symbol)
-                        symbolTable.put(localFunctionName, auxList)
+                var auxListGlobal = mutableListOf<String>()
+                var allListGlobal = symbolTable.get("Global")
+                if(allListGlobal!=null) {
+                    for (symbolI in allListGlobal) {
+                        auxListGlobal.add(symbolI.lex)
                     }
                 }
-                t++
+                if(localFunctionName.equals("Global")) {
+
+                    //mirar si está contenido
+                    if(!auxListGlobal.contains(token)) {
+                        var symbol = Identifier(t, token)
+                        auxSymbolMap.put(token, t)
+                        var auxList = mutableListOf<Identifier>()
+
+                        if (symbolTable.containsKey(localFunctionName)) {
+                            for (iden in symbolTable.get(localFunctionName)!!) {
+                                auxList.add(iden)
+                            }
+                            auxList.add(symbol)
+                            symbolTable.put(localFunctionName, auxList)
+                        } else {
+                            auxList.add(symbol)
+                            symbolTable.put(localFunctionName, auxList)
+                        }
+                        t++
+                    }
+                }else{
+
+                    //mirar si está contenido
+                    var auxListLocal = mutableListOf<String>()
+                    var allListLocal = symbolTable.get(localFunctionName)
+                    if(allListLocal!=null) {
+                        for (symbolL in allListLocal) {
+                            auxListLocal.add(symbolL.lex)
+                        }
+                    }
+
+                    if(checkFunction) {
+                        if(!checkGlobal) {
+                            var symbol = Identifier(t, token)
+                            auxSymbolMap.put(token, t)
+                            var auxList = mutableListOf<Identifier>()
+
+                            if (symbolTable.containsKey(localFunctionName)) {
+                                for (iden in symbolTable.get(localFunctionName)!!) {
+                                    auxList.add(iden)
+                                }
+                                auxList.add(symbol)
+                                symbolTable.put(localFunctionName, auxList)
+                            } else {
+                                auxList.add(symbol)
+                                symbolTable.put(localFunctionName, auxList)
+                            }
+                            t++
+                        }else{
+
+                            if(!auxListGlobal.contains(token) && !auxListLocal.contains(token)){
+                                var symbol = Identifier(t, token)
+                                auxSymbolMap.put(token, t)
+                                var auxList = mutableListOf<Identifier>()
+
+                                if (symbolTable.containsKey("Global")) {
+                                    for (iden in symbolTable.get("Global")!!) {
+                                        auxList.add(iden)
+                                    }
+                                    auxList.add(symbol)
+                                    symbolTable.put("Global", auxList)
+                                } else {
+                                    auxList.add(symbol)
+                                    symbolTable.put("Global", auxList)
+                                }
+                                t++
+                            }
+
+                        }
+                    }else{
+
+                        var symbol = Identifier(t, token)
+                        auxSymbolMap.put(token, t)
+                        var auxList = mutableListOf<Identifier>()
+
+                        if (symbolTable.containsKey(localFunctionName)) {
+                            for (iden in symbolTable.get(localFunctionName)!!) {
+                                auxList.add(iden)
+                            }
+                            auxList.add(symbol)
+                            symbolTable.put(localFunctionName, auxList)
+                        } else {
+                            auxList.add(symbol)
+                            symbolTable.put(localFunctionName, auxList)
+                        }
+                        t++
+
+                    }
+
+                }
+
                 line = "<id, ${auxSymbolMap.get(token)}>"
                 tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
             }
@@ -144,13 +236,14 @@ class FilePrinter {
 
         sf.createNewFile()
         sf.printWriter().use { out ->
-            if(symbolTable.isNotEmpty()){
+            if(symbolTable.isNotEmpty()) {
 
-                for(keyName in symbolTable){
+                for (keyName in symbolTable) {
                     nombresTablas.add(keyName.key)
                 }
 
-                nombresTablas.remove("Global")
+                if (symbolTable.containsKey("Global")) {
+                    nombresTablas.remove("Global")
                 //printer de la tabla de simbolos global
                 out.println("TABLA GLOBAL #1:")
                 out.println()
@@ -186,6 +279,7 @@ class FilePrinter {
                     out.println("  + id: ${symbol.id}")
                     out.println("-------------------------")
                 }
+            }
 
                 //printer tablas anidadas
                 if(nombresTablas.size >= 1) {

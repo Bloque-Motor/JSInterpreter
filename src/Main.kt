@@ -4,7 +4,7 @@ import kotlin.system.exitProcess
 fun main() {
     println("Enter filename to parse:")
     var tokenStream: MutableList<Token>
-    var symbolTable: MutableList<Identifier>
+    var symbolTable: MutableMap<String, List<Identifier>>
     val fileName: String? = readLine()
     val file = File(fileName)
     var lines = 0
@@ -35,14 +35,14 @@ fun main() {
             continue@loop
         }
     }
-    symbolTable = fp.symbolTable.get("Global")!! as MutableList<Identifier>
+    symbolTable = fp.symbolTable  //.get("Global")!! as MutableList<Identifier>
     tokenStream = fp.tokenStream
     tokenStream.add(Token("eof", ""))
     val ssa = SyntaxAnalyzer(tokenStream, symbolTable)
     var parseOrder = mutableListOf<Int>()
     try {
         parseOrder = ssa.parse()
-        fp.symbolTable = ssa.symbolTable as MutableMap<String, List<Identifier>>
+        fp.symbolTable = ssa.symbolTableMap //as MutableMap<String, List<Identifier>>
     }catch (e: Exception){
         fp.addError(e.message!!)
         errors++
