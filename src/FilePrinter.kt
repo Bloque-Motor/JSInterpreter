@@ -28,9 +28,10 @@ class FilePrinter {
 
     var boolFunction = false
     var local = 0
-    var localLevel = "Global"
     var localFunctionName = "Global"
+    var functionName = ""
     var numId = 0
+    var t = 0
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -62,6 +63,7 @@ class FilePrinter {
                     if(local == 0){
                         boolFunction = false
                         localFunctionName = "Global"
+                        functionName = ""
                         numId = 0
 
                     }
@@ -71,15 +73,19 @@ class FilePrinter {
 
                 if (!auxSymbolMap.containsKey(token)){
                     if(boolFunction){
-                        if(numId == 1) {
-                            localFunctionName = token
+                        if(numId == 0) {
+                            functionName = token
                         }
-                        numId = 1
+                        else if(numId == 1){
+                            localFunctionName = functionName
+                        }
+                        numId++
                     }
 
-                    var symbol = Identifier(symbolTable.size, token)
-                    auxSymbolMap.put(token, symbolTable.size)
+                    var symbol = Identifier(t, token)
+                    auxSymbolMap.put(token, t)
                     var auxList = mutableListOf<Identifier>()
+
                     if(symbolTable.containsKey(localFunctionName)){
                        for(iden in symbolTable.get(localFunctionName)!!){
                            auxList.add(iden)
@@ -91,6 +97,7 @@ class FilePrinter {
                         symbolTable.put(localFunctionName, auxList)
                     }
                 }
+                t++
                 line = "<id, ${auxSymbolMap.get(token)}>"
                 tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
             }
@@ -131,44 +138,78 @@ class FilePrinter {
 
     fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
-        var tableNumber = 1
+        var tableNumber = 2
+        var nombresTablas = mutableListOf<String>()
+        var j = 0
+
         sf.createNewFile()
         sf.printWriter().use { out ->
-            out.println("TABLA GLOBAL #$tableNumber:")
-            out.println()
-            for (symbol in symbolTable.get("Global")!!){
-                out.println("* LEXEMA : '${symbol.lex}'")
-                out.println("  ATRIBUTOS :")
-                if(symbol.type == Identifier.Type.FUNCTION){
-                    out.println("  + tipo: 'funcion'")
-                    when(symbol.returnType){
-                        Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
-                        Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-                        Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
-                        else->out.println("  + tipoRetorno: 'void'")
-                    }
-                    var params = ""
-                    for (param in symbol.parameterList){
-                        when(param){
-                            Identifier.Type.INT -> params += "entero, "
-                            Identifier.Type.BOOLEAN -> params += "logico, "
-                            Identifier.Type.STRING -> params += "cadena, "
+            if(symbolTable.isNotEmpty()){
+
+                for(keyName in symbolTable){
+                    nombresTablas.add(keyName.key)
+                }
+
+                nombresTablas.remove("Global")
+                //printer de la tabla de simbolos global
+                out.println("TABLA GLOBAL #1:")
+                out.println()
+                for (symbol in symbolTable.get("Global")!!) {
+                    out.println("* LEXEMA : '${symbol.lex}'")
+                    out.println("  ATRIBUTOS :")
+                    if (symbol.type == Identifier.Type.FUNCTION) {
+                        out.println("  + tipo: 'funcion'")
+                        when (symbol.returnType) {
+                            Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
+                            Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
+                            Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
+                            else -> out.println("  + tipoRetorno: 'void'")
+                        }
+                        var params = ""
+                        for (param in symbol.parameterList) {
+                            when (param) {
+                                Identifier.Type.INT -> params += "entero, "
+                                Identifier.Type.BOOLEAN -> params += "logico, "
+                                Identifier.Type.STRING -> params += "cadena, "
+                            }
+                        }
+                        params = params.dropLast(2)
+                        out.println("  + tipoParametros: '$params'")
+                        out.println("  + numParametros: '${symbol.parameterCount}'")
+                    } else {
+                        when (symbol.type) {
+                            Identifier.Type.INT -> out.println("  + tipo: 'entero'")
+                            Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
+                            Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
                         }
                     }
-                    params = params.dropLast(2)
-                    out.println("  + tipoParametros: '$params'")
-                    out.println("  + numParametros: '${symbol.parameterCount}'")
-                }else{
-                    when(symbol.type){
-                        Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                        Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                        Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
+                    out.println("  + id: ${symbol.id}")
+                    out.println("-------------------------")
+                }
+
+                //printer tablas anidadas
+                if(nombresTablas.size >= 1) {
+                    for (tableName in nombresTablas) {
+                        out.println()
+                        out.println("TABLA DE LA FUNCION $tableName #$tableNumber:")
+                        out.println()
+                        for (symbolA in symbolTable.get(tableName)!!) {
+
+                            out.println("* LEXEMA : '${symbolA.lex}'")
+                            out.println("  ATRIBUTOS :")
+                            out.println("  + id: ${symbolA.id}")
+
+                        }
+
+                        out.println("-------------------------")
+                        tableNumber++
                     }
                 }
-                out.println("  + id: ${symbol.id}")
-                out.println("-------------------------")
             }
-            tableNumber++
+            else{
+                out.println("La tabla está vacia")
+            }
+
         }
     }
 
