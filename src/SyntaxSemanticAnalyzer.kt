@@ -4,24 +4,22 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1
     }
 
-    private var stack = Stack()
+    enum class Types {
+        OK, ERROR, BOOLEAN, VOID, INT, STRING
+    }
+
+    enum class SemanticAction {
+        SA1, SA2, SA3, SA4, SA5, SA6, SA7, SA8, SA9, SA10, SA11, SA12, SA13, SA14, SA15, SA16, SA17, SA18, SA19, SA20, SA21, SA22, SA23, SA24, SA25, SA26, SA27, SA28, SA29, SA30, SA31, SA32, SA33, SA34, SA35, SA36, SA37, SA38, SA39, SA40, SA41, SA42, SA43, SA44, SA45, SA46, SA47, SA48, SA49, SA50, SA51, SA52, SA53, SA54, SA55, SA56, SA57, SA58, SA59, SA60
+    }
+
+    class Pair {
+        lateinit var state: States
+        lateinit var type: Types
+    }
+
+    private var stack: Stack = Stack()
     private var parseOrder = mutableListOf<Int>()
-
-    private var inVariableDeclaration = false
-    private var inFunctionDeclaration = false
-    private var inVariableAssignment = false
-    private var checkingBooleanExpression = false
-    private var inFunctionParametrization = false
-    private var inReturnStatement = false
-    private var comparingExpressions = false
-
-    private var parsingFunctionId = -1
-    private var curlyBraceLevel = 0
-
-    private var leftOfAssignment = -1
-    private var auxType: Identifier.Type? = null
-    private var returnType: Identifier.Type? = null
-    private var typeListAux = mutableListOf<Identifier.Type>()
+    private var aux: Stack = Stack()
 
     fun parse(): MutableList<Int> {
         var currentIndex = 0
@@ -29,52 +27,105 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         stack.push(States.P)
         while (currentIndex < tokenStream.size) {
             currentToken = tokenStream[currentIndex]
-            if (stack.peek() is Token) {
-                if ((stack.peek() as Token).type == currentToken.type) {
-                    if (inFunctionDeclaration && currentToken.type == "id") {
-                        parsingFunctionId = currentToken.value.toInt()
-                        symbolTable[parsingFunctionId].type = Identifier.Type.FUNCTION
-                        symbolTable[parsingFunctionId].returnType = returnType
-                        inFunctionDeclaration = false
-                        returnType = null
+            when (stack.peek()) {
+
+                is Token ->
+                    if ((stack.peek() as Token).type == currentToken.type) {
+                        stack.pop()
+                        currentIndex++
+                    } else {
+                        throw Exception("Syntax Error on token $currentIndex. Expected \"${(stack.peek() as Token).type}\"")
                     }
-                    if (inFunctionParametrization && currentToken.type == "id") {
-                        symbolTable[currentToken.value.toInt()].type = auxType
-                        auxType = null
+                is States ->
+                    when (stack.peek()) {
+                        States.P -> stateP(currentToken)
+                        States.B -> stateB(currentToken)
+                        States.B1 -> stateB1(currentToken)
+                        States.T -> stateT(currentToken)
+                        States.S -> stateS(currentToken)
+                        States.S1 -> stateS1(currentToken)
+                        States.S2 -> stateS2(currentToken)
+                        States.S3 -> stateS3(currentToken)
+                        States.S4 -> stateS4(currentToken)
+                        States.X -> stateX(currentToken)
+                        States.C -> stateC(currentToken)
+                        States.F -> stateF(currentToken)
+                        States.H -> stateH(currentToken)
+                        States.A -> stateA(currentToken)
+                        States.K -> stateK(currentToken)
+                        States.L -> stateL(currentToken)
+                        States.Q -> stateQ(currentToken)
+                        States.E -> stateE(currentToken)
+                        States.R -> stateR(currentToken)
+                        States.U -> stateU(currentToken)
+                        States.U1 -> stateU1(currentToken)
+                        States.U2 -> stateU2(currentToken)
+                        States.V -> stateV(currentToken)
+                        States.V1 -> stateV1(currentToken)
                     }
-                    stack.pop()
-                    currentIndex++
-                    println(currentIndex)
-                } else {
-                    throw Exception("Syntax Error on token $currentIndex. Expected \"${(stack.peek() as Token).type}\"")
-                }
-            } else {
-                when (stack.peek()) {
-                    States.P -> stateP(currentToken)
-                    States.B -> stateB(currentToken)
-                    States.B1 -> stateB1(currentToken)
-                    States.T -> stateT(currentToken)
-                    States.S -> stateS(currentToken)
-                    States.S1 -> stateS1(currentToken)
-                    States.S2 -> stateS2(currentToken)
-                    States.S3 -> stateS3(currentToken)
-                    States.S4 -> stateS4(currentToken)
-                    States.X -> stateX(currentToken)
-                    States.C -> stateC(currentToken)
-                    States.F -> stateF(currentToken)
-                    States.H -> stateH(currentToken)
-                    States.A -> stateA(currentToken)
-                    States.K -> stateK(currentToken)
-                    States.L -> stateL(currentToken)
-                    States.Q -> stateQ(currentToken)
-                    States.E -> stateE(currentToken)
-                    States.R -> stateR(currentToken)
-                    States.U -> stateU(currentToken)
-                    States.U1 -> stateU1(currentToken)
-                    States.U2 -> stateU2(currentToken)
-                    States.V -> stateV(currentToken)
-                    States.V1 -> stateV1(currentToken)
-                }
+                is SemanticAction ->
+                    when (stack.peek()) {
+                        SemanticAction.SA1 -> SemanticAnalyzer.SA1()
+                        SemanticAction.SA2 -> SemanticAnalyzer.SA2()
+                        SemanticAction.SA3 -> SemanticAnalyzer.SA3()
+                        SemanticAction.SA4 -> SemanticAnalyzer.SA4()
+                        SemanticAction.SA5 -> SemanticAnalyzer.SA5()
+                        SemanticAction.SA6 -> SemanticAnalyzer.SA6()
+                        SemanticAction.SA7 -> SemanticAnalyzer.SA7()
+                        SemanticAction.SA8 -> SemanticAnalyzer.SA8()
+                        SemanticAction.SA9 -> SemanticAnalyzer.SA9()
+                        SemanticAction.SA10 -> SemanticAnalyzer.SA10()
+                        SemanticAction.SA11 -> SemanticAnalyzer.SA11()
+                        SemanticAction.SA12 -> SemanticAnalyzer.SA12()
+                        SemanticAction.SA13 -> SemanticAnalyzer.SA13()
+                        SemanticAction.SA14 -> SemanticAnalyzer.SA14()
+                        SemanticAction.SA15 -> SemanticAnalyzer.SA15()
+                        SemanticAction.SA16 -> SemanticAnalyzer.SA16()
+                        SemanticAction.SA17 -> SemanticAnalyzer.SA17()
+                        SemanticAction.SA18 -> SemanticAnalyzer.SA18()
+                        SemanticAction.SA19 -> SemanticAnalyzer.SA19()
+                        SemanticAction.SA20 -> SemanticAnalyzer.SA20()
+                        SemanticAction.SA21 -> SemanticAnalyzer.SA21()
+                        SemanticAction.SA22 -> SemanticAnalyzer.SA22()
+                        SemanticAction.SA23 -> SemanticAnalyzer.SA23()
+                        SemanticAction.SA24 -> SemanticAnalyzer.SA24()
+                        SemanticAction.SA25 -> SemanticAnalyzer.SA25()
+                        SemanticAction.SA26 -> SemanticAnalyzer.SA26()
+                        SemanticAction.SA27 -> SemanticAnalyzer.SA27()
+                        SemanticAction.SA28 -> SemanticAnalyzer.SA28()
+                        SemanticAction.SA29 -> SemanticAnalyzer.SA29()
+                        SemanticAction.SA30 -> SemanticAnalyzer.SA30()
+                        SemanticAction.SA31 -> SemanticAnalyzer.SA31()
+                        SemanticAction.SA32 -> SemanticAnalyzer.SA32()
+                        SemanticAction.SA33 -> SemanticAnalyzer.SA33()
+                        SemanticAction.SA34 -> SemanticAnalyzer.SA34()
+                        SemanticAction.SA35 -> SemanticAnalyzer.SA35()
+                        SemanticAction.SA36 -> SemanticAnalyzer.SA36()
+                        SemanticAction.SA37 -> SemanticAnalyzer.SA37()
+                        SemanticAction.SA38 -> SemanticAnalyzer.SA38()
+                        SemanticAction.SA39 -> SemanticAnalyzer.SA39()
+                        SemanticAction.SA40 -> SemanticAnalyzer.SA40()
+                        SemanticAction.SA41 -> SemanticAnalyzer.SA41()
+                        SemanticAction.SA42 -> SemanticAnalyzer.SA42()
+                        SemanticAction.SA43 -> SemanticAnalyzer.SA43()
+                        SemanticAction.SA44 -> SemanticAnalyzer.SA44()
+                        SemanticAction.SA45 -> SemanticAnalyzer.SA45()
+                        SemanticAction.SA46 -> SemanticAnalyzer.SA46()
+                        SemanticAction.SA47 -> SemanticAnalyzer.SA47()
+                        SemanticAction.SA48 -> SemanticAnalyzer.SA48()
+                        SemanticAction.SA49 -> SemanticAnalyzer.SA49()
+                        SemanticAction.SA50 -> SemanticAnalyzer.SA50()
+                        SemanticAction.SA51 -> SemanticAnalyzer.SA51()
+                        SemanticAction.SA52 -> SemanticAnalyzer.SA52()
+                        SemanticAction.SA53 -> SemanticAnalyzer.SA53()
+                        SemanticAction.SA54 -> SemanticAnalyzer.SA54()
+                        SemanticAction.SA55 -> SemanticAnalyzer.SA55()
+                        SemanticAction.SA56 -> SemanticAnalyzer.SA56()
+                        SemanticAction.SA57 -> SemanticAnalyzer.SA57()
+                        SemanticAction.SA58 -> SemanticAnalyzer.SA58()
+                        SemanticAction.SA59 -> SemanticAnalyzer.SA59()
+                        SemanticAction.SA60 -> SemanticAnalyzer.SA60()
+                    }
             }
         }
 
@@ -98,7 +149,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             }
             "eof" -> {
                 stack.pop()
-                stack.push(Token("eof", ""))
+                stack.push(Token("eof",""))
                 parseOrder.add(3)
             }
             else -> throw Exception("Syntax error. State P received ${token.type} token.")
@@ -114,7 +165,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.T)
                 stack.push(Token("var", ""))
                 parseOrder.add(4)
-                inVariableDeclaration = true
             }
             "if" -> {
                 stack.pop()
@@ -124,7 +174,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("(", ""))
                 stack.push(Token("if", ""))
                 parseOrder.add(5)
-                checkingBooleanExpression = true
             }
             "while" -> {
                 stack.pop()
@@ -136,7 +185,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("(", ""))
                 stack.push(Token("while", ""))
                 parseOrder.add(6)
-                checkingBooleanExpression = true
             }
             "id", "return", "print", "input" -> {
                 stack.pop()
@@ -160,8 +208,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.C)
                 stack.push(Token("{", ""))
                 parseOrder.add(9)
-
-                curlyBraceLevel++
             }
             else -> throw Exception("Syntax error. State B1 received ${token.type} token.")
         }
@@ -173,37 +219,16 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(Token("int", ""))
                 parseOrder.add(10)
-
-                if (inVariableDeclaration) auxType = Identifier.Type.INT
-                if (inFunctionDeclaration) returnType = Identifier.Type.INT
-                if (inFunctionParametrization) {
-                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.INT)
-                    auxType = Identifier.Type.INT
-                }
             }
             "string" -> {
                 stack.pop()
                 stack.push(Token("string", ""))
                 parseOrder.add(11)
-
-                if (inVariableDeclaration) auxType = Identifier.Type.STRING
-                if (inFunctionDeclaration) returnType = Identifier.Type.STRING
-                if (inFunctionParametrization) {
-                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.STRING)
-                    auxType = Identifier.Type.STRING
-                }
             }
             "boolean" -> {
                 stack.pop()
                 stack.push(Token("boolean", ""))
                 parseOrder.add(12)
-
-                if (inVariableDeclaration) auxType = Identifier.Type.BOOLEAN
-                if (inFunctionDeclaration) returnType = Identifier.Type.BOOLEAN
-                if (inFunctionParametrization) {
-                    symbolTable[parsingFunctionId].addParameter(Identifier.Type.BOOLEAN)
-                    auxType = Identifier.Type.BOOLEAN
-                }
             }
             else -> throw Exception("Syntax error. State T  received ${token.type} token.")
         }
@@ -216,14 +241,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.S1)
                 stack.push(Token("id", ""))
                 parseOrder.add(13)
-
-                inVariableAssignment = true
-                if (symbolTable[token.value.toInt()].type == null) {
-                    throw Exception("Semantic error: ${symbolTable[token.value.toInt()].lex} is not defined.")
-                } else {
-                    typeListAux.add(symbolTable[token.value.toInt()].type!!)
-                    leftOfAssignment = token.value.toInt()
-                }
             }
             "return" -> {
                 stack.pop()
@@ -289,14 +306,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.S3)
                 stack.push(Token("id", ""))
                 parseOrder.add(20)
-
-                inVariableAssignment = true
-                if (symbolTable[token.value.toInt()].type == null) {
-                    symbolTable[token.value.toInt()].type = auxType
-                    leftOfAssignment = token.value.toInt()
-                } else {
-                    throw Exception("Semantic error. Variable ${symbolTable[token.value.toInt()].lex} is already defined in the scope.")
-                }
             }
             else -> throw Exception("Syntax error. State S2 received ${token.type} token.")
         }
@@ -320,8 +329,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             ";" -> {
                 stack.pop()
                 parseOrder.add(23)
-                inVariableAssignment = false
-                leftOfAssignment = -1
             }
             else -> throw Exception("Syntax error. State S3 received ${token.type} token.")
         }
@@ -338,10 +345,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             ";" -> {
                 stack.pop()
                 parseOrder.add(25)
-                inVariableDeclaration = false
-                auxType = null
-                inVariableAssignment = false
-                leftOfAssignment = -1
             }
             else -> throw Exception("Syntax error. State S4 received ${token.type} token.")
         }
@@ -353,19 +356,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(States.E)
                 parseOrder.add(26)
-
-                inReturnStatement = true
             }
             ";" -> {
                 stack.pop()
                 parseOrder.add(27)
-
-                inVariableAssignment = false
-                leftOfAssignment = -1
-
-                if (symbolTable[parsingFunctionId].returnType != Identifier.Type.VOID)
-                    throw Exception("Semantic error: Type missmatch. Expected ${symbolTable[parsingFunctionId].returnType} as return " +
-                            "type for ${symbolTable[parsingFunctionId].lex}. Got VOID.")
             }
             else -> throw Exception("Syntax error. State X received ${token.type} token.")
         }
@@ -382,8 +376,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             "}" -> {
                 stack.pop()
                 parseOrder.add(29)
-                curlyBraceLevel--
-                if (parsingFunctionId != -1 && curlyBraceLevel == 0) parsingFunctionId = -1
             }
             else -> throw Exception("Syntax error. State C received ${token.type} token.")
         }
@@ -403,8 +395,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.H)
                 stack.push(Token("function", ""))
                 parseOrder.add(30)
-
-                inFunctionDeclaration = true
             }
             else -> throw Exception("Syntax error. State F received ${token.type} token.")
         }
@@ -420,8 +410,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             "id" -> {
                 stack.pop()
                 parseOrder.add(32)
-
-                if (inFunctionDeclaration) returnType = Identifier.Type.VOID
             }
             else -> throw Exception("Syntax error. State H received ${token.type} token.")
         }
@@ -435,13 +423,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(Token("id", ""))
                 stack.push(States.T)
                 parseOrder.add(33)
-
-                inFunctionParametrization = true
             }
             ")" -> {
                 stack.pop()
                 parseOrder.add(34)
-                inFunctionParametrization = false
             }
             else -> throw Exception("Syntax error. State A received ${token.type} token.")
         }
@@ -460,7 +445,6 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
             ")" -> {
                 stack.pop()
                 parseOrder.add(36)
-                inFunctionParametrization = false
             }
             else -> throw Exception("Syntax error. State K received ${token.type} token.")
 
@@ -489,7 +473,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(States.Q)
                 stack.push(States.E)
-                stack.push(Token(",", ""))
+                stack.push(Token(",",""))
                 parseOrder.add(39)
             }
             ")" -> {
@@ -501,11 +485,11 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     }
 
     private fun stateE(token: Token) {
-        when (token.type) {
+        when (token.type){
             "!" -> {
                 stack.pop()
                 stack.push(States.E)
-                stack.push(Token("!", ""))
+                stack.push(Token("!",""))
                 parseOrder.add(41)
             }
             "id", "number", "(", "cadena", "false", "true" -> {
@@ -513,62 +497,22 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.push(States.R)
                 stack.push(States.U)
                 parseOrder.add(42)
-
-                if (checkingBooleanExpression) {
-                    if (typeListAux.isNotEmpty()) {
-                        var leftType: Identifier.Type = typeListAux[typeListAux.size - 1]
-                        for (type in typeListAux) {
-                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
-                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
-                        }
-                    }
-                }
             }
             else -> throw Exception("Syntax error. State E received ${token.type} token.")
         }
     }
 
     private fun stateR(token: Token) {
-        when (token.type) {
+        when (token.type){
             "<" -> {
                 stack.pop()
                 stack.push(States.U)
-                stack.push((Token("<", "")))
+                stack.push((Token("<","")))
                 parseOrder.add(43)
-
-                if (inReturnStatement) comparingExpressions = true
             }
-            ")", "," -> {
+            ")", ",", ";" -> {
                 stack.pop()
-                parseOrder.add(44)
-
-                if (checkingBooleanExpression) {
-                    if (typeListAux.size == 1 && typeListAux[0] != Identifier.Type.BOOLEAN) {
-                        var type = typeListAux[0]
-                        throw Exception("Semantic error: type mismatch. Expected Boolean found $type.")
-                    } else {
-                        checkingBooleanExpression = false
-                        typeListAux = mutableListOf()
-                    }
-                }
-            }
-            ";" -> {
-                stack.pop()
-                parseOrder.add(44)
-
-                if (inVariableAssignment) {
-                    var leftType: Identifier.Type?
-                    if (typeListAux.isNotEmpty()) {
-                        leftType = symbolTable[leftOfAssignment].type
-                        for (type in typeListAux) {
-                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
-                        }
-                        typeListAux = mutableListOf()
-                    }
-                }
-
-                inVariableAssignment = false
-                leftOfAssignment = -1
+                parseOrder.add((44))
             }
             else -> throw Exception("Syntax error. State R received ${token.type} token.")
         }
@@ -587,90 +531,52 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     }
 
     private fun stateU1(token: Token) {
-        when (token.type) {
+        when(token.type){
             "+" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("+", ""))
                 parseOrder.add(46)
-
-                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "-" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("-", ""))
                 parseOrder.add(47)
-
-                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "*" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("*", ""))
                 parseOrder.add(48)
-
-                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "/" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("/", ""))
                 parseOrder.add(49)
-
-                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             "%" -> {
                 stack.pop()
                 stack.push(States.V)
                 stack.push(Token("%", ""))
                 parseOrder.add(50)
-
-                if (typeListAux.contains(Identifier.Type.STRING)) throw Exception ("Semantic error: type mismatch. Cannot operate with STRINGS")
             }
             else -> throw Exception("Syntax error. State U1 received ${token.type} token.")
         }
     }
 
     private fun stateU2(token: Token) {
-        when (token.type) {
-            "+", "-", "*", "/", "%" -> {
+        when(token.type){
+            "+","-","*","/","%" -> {
                 stack.pop()
                 stack.push(States.U2)
                 stack.push(States.U1)
                 parseOrder.add(51)
             }
-            "<", "," -> {
+            "<",")",",",";" -> {
                 stack.pop()
                 parseOrder.add(52)
-            }
-            ")" -> {
-                stack.pop()
-                parseOrder.add(52)
-
-                if (checkingBooleanExpression) {
-                    if (typeListAux.size == 1 && typeListAux[0] != Identifier.Type.BOOLEAN) {
-                        var type = typeListAux[0]
-                        throw Exception("Semantic error: type mismatch. Expected Boolean found $type.")
-                    } else {
-                        var leftType: Identifier.Type = typeListAux[0]
-                        for (type in typeListAux) {
-                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
-                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
-                        }
-                        checkingBooleanExpression = false
-                        typeListAux = mutableListOf()
-                    }
-                }
-
-            }
-            ";" -> {
-                stack.pop()
-                parseOrder.add(52)
-
-                inVariableAssignment = false
-                typeListAux = mutableListOf()
-                leftOfAssignment = -1
             }
             else -> throw Exception("Syntax error. State U2 received ${token.type} token.")
         }
@@ -678,27 +584,19 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
     }
 
     private fun stateV(token: Token) {
-        when (token.type) {
+        when (token.type){
             "id" -> {
                 stack.pop()
                 stack.push(States.V1)
                 stack.push(Token("id", ""))
                 parseOrder.add(53)
-
-                if (symbolTable[token.value.toInt()].type == null) {
-                    throw Exception("Semantic error: ${symbolTable[token.value.toInt()].lex} is not defined.")
-                } else {
-                    typeListAux.add(symbolTable[token.value.toInt()].type!!)
-                }
             }
-            "number" -> {
+            "number"->{
                 stack.pop()
                 stack.push(Token("number", ""))
                 parseOrder.add(54)
-
-                typeListAux.add(Identifier.Type.INT)
             }
-            "(" -> {
+            "(" ->{
                 stack.pop()
                 stack.push(Token("(", ""))
                 stack.push(States.E)
@@ -709,22 +607,16 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(Token("cadena", ""))
                 parseOrder.add(56)
-
-                typeListAux.add(Identifier.Type.STRING)
             }
             "false" -> {
                 stack.pop()
                 stack.push(Token("false", ""))
                 parseOrder.add(57)
-
-                typeListAux.add(Identifier.Type.BOOLEAN)
             }
             "true" -> {
                 stack.pop()
                 stack.push(Token("true", ""))
                 parseOrder.add(58)
-
-                typeListAux.add(Identifier.Type.BOOLEAN)
             }
             else -> throw Exception("Syntax error. State V received ${token.type} token.")
         }
@@ -736,42 +628,12 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 stack.pop()
                 stack.push(Token(")", ""))
                 stack.push(States.L)
-                stack.push(Token("(", ""))
+                stack.push(Token("(",""))
                 parseOrder.add(59)
             }
-            "+", "-", "*", "/", "%", "<", "," -> {
+            "+","-","*","/","%","<",",",";",")" -> {
                 stack.pop()
                 parseOrder.add(60)
-            }
-            ")" -> {
-                stack.pop()
-                parseOrder.add(60)
-
-                if (checkingBooleanExpression) {
-                    if (typeListAux.size == 1 && typeListAux[0] == Identifier.Type.BOOLEAN) {
-                        typeListAux = mutableListOf()
-                    } else if (typeListAux.size == 1 && typeListAux[0] != Identifier.Type.BOOLEAN) {
-                        var type = typeListAux[0]
-                        throw Exception("Semantic error: type mismatch. Expected Boolean found $type.")
-                    } else {
-                        var leftType: Identifier.Type = typeListAux[0]
-                        for (type in typeListAux) {
-                            if (leftType != type) throw Exception("Semantic error: type mismatch. Expected $leftType found $type.")
-                            if (leftType == Identifier.Type.STRING || type == Identifier.Type.STRING) throw Exception("Semantic error: Cannot evaluate STRINGS")
-                        }
-                        typeListAux = mutableListOf()
-                    }
-
-                    checkingBooleanExpression = false
-                }
-            }
-
-            ";" -> {
-                stack.pop()
-                parseOrder.add(60)
-
-                inVariableAssignment = false
-                leftOfAssignment = -1
             }
             else -> throw Exception("Syntax error. State V1 received ${token.type} token.")
         }
@@ -790,5 +652,9 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         }
 
         fun peek(): Any? = elements.lastOrNull()
+    }
+
+    private fun checkAlgebra(tokens: MutableList<Token>) {
+
     }
 }

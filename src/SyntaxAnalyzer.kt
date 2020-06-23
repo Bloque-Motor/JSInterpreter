@@ -575,4 +575,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTable: List
 
         fun peek(): Any? = elements.lastOrNull()
     }
+
+    private fun checkAlgebra(tokens: MutableList<Token>) {
+
+    }
 }
