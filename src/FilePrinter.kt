@@ -15,10 +15,10 @@ class FilePrinter {
     var relationOps = mutableListOf<String>()
 
     var symbolTable = mutableMapOf<Int,TableSymbol>()
-        /*get() = field
+        get() = field
         set(value) {
             field = value
-        }*/
+        }
 
     var tokenStream = mutableListOf<Token>()
         get() = field
@@ -108,8 +108,8 @@ class FilePrinter {
 
                 for(simbolosGlobal in symbolTable){
                     if(simbolosGlobal.value.tableName.equals("Global")){
-                        if(!auxListActual.contains(simbolosGlobal.value.lex)) {
-                            auxListActual.add(simbolosGlobal.value.lex)
+                        if(!auxListGlobal.contains(simbolosGlobal.value.lex)) {
+                            auxListGlobal.add(simbolosGlobal.value.lex)
                         }
                     }
                 }
