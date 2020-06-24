@@ -35,6 +35,7 @@ class FilePrinter {
     var t = 0
     var checkGlobal = true
     var checkFunction = false
+    var despl = 0
 
     fun addToken(type: Int, token: String){
         var line = ""
