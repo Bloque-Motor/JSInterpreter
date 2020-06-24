@@ -2,25 +2,31 @@ import res.Stack
 import res.Tuple
 import res.Types
 
-class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTable: List<Identifier>) {
+class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTable: MutableMap<String, List<Identifier>>) { // aqui arriba hay que cambiar el tipo de symbolTable a MultableMap<Int, TableSymbol>
 
     enum class States {
         P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1
     }
 
     enum class SemanticAction {
-        SA1, SA2, SA3, SA4_1, SA4_2, SA5, SA6, SA7, SA8, SA9, SA10, SA11, SA12, SA13, SA14, SA15, SA16, SA17, SA18, SA19, SA20_1, SA20_2, SA21, SA22_1, SA22_2, SA23, SA24, SA25, SA26, SA27, SA28, SA29, SA30, SA31, SA32, SA33, SA34, SA35, SA36, SA37, SA38, SA39, SA40, SA41, SA42, SA43, SA44, SA45, SA46, SA47, SA48, SA49, SA50, SA51, SA52, SA53, SA54, SA55, SA56, SA57, SA58, SA59, SA60, PA
+        SA1, SA2, SA3, SA4_1, SA4_2, SA5, SA6, SA7, SA8, SA9, SA10,
+        SA11, SA12, SA13_1, SA13_2, SA14, SA15, SA16, SA17, SA18, SA19,
+        SA20_1, SA20_2, SA21, SA22_1, SA22_2, SA24_1, SA24_2,
+        SA26, SA28, SA30_1, SA30_2, SA31, SA33_1, SA33_2,
+        SA35_1, SA35_2,  SA37,  SA39, SA41, SA42, SA43,
+        SA45, SA46, SA47, SA48, SA49, SA50, SA51, SA53, SA54,
+        SA55, SA56, SA57, SA58, SA59, PA;
     }
 
     var stack: Stack = Stack()
     private var parseOrder = mutableListOf<Int>()
     var aux: Stack = Stack()
-    private var sa = SemanticAnalyzer(this)
+    private var sa = SemanticAnalyzer(this, symbolTable)
 
     fun parse(): MutableList<Int> {
         var currentIndex = 0
         var currentToken: Token
-        stack.push(States.P)
+        stack.push(Tuple(States.P,null))
         while (currentIndex < tokenStream.size) {
             currentToken = tokenStream[currentIndex]
             when (stack.peek()) {
@@ -75,7 +81,8 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         SemanticAction.SA10 -> sa.SA10()
                         SemanticAction.SA11 -> sa.SA11()
                         SemanticAction.SA12 -> sa.SA12()
-                        SemanticAction.SA13 -> sa.SA13()
+                        SemanticAction.SA13_1 -> sa.SA13_1()
+                        SemanticAction.SA13_2 -> sa.SA13_2()
                         SemanticAction.SA14 -> sa.SA14()
                         SemanticAction.SA15 -> sa.SA15()
                         SemanticAction.SA16 -> sa.SA16()
@@ -87,14 +94,17 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                         SemanticAction.SA21 -> sa.SA21()
                         SemanticAction.SA22_1 -> sa.SA22_1()
                         SemanticAction.SA22_2 -> sa.SA22_2()
-                        SemanticAction.SA24 -> sa.SA24()
+                        SemanticAction.SA24_1 -> sa.SA24_1()
+                        SemanticAction.SA24_2 -> sa.SA24_2()
                         SemanticAction.SA26 -> sa.SA26()
-                        SemanticAction.SA27 -> sa.SA27()
                         SemanticAction.SA28 -> sa.SA28()
-                        SemanticAction.SA30 -> sa.SA30()
+                        SemanticAction.SA30_1 -> sa.SA30_1()
+                        SemanticAction.SA30_2 -> sa.SA30_2()
                         SemanticAction.SA31 -> sa.SA31()
-                        SemanticAction.SA33 -> sa.SA33()
-                        SemanticAction.SA35 -> sa.SA35()
+                        SemanticAction.SA33_1 -> sa.SA33_1()
+                        SemanticAction.SA33_2 -> sa.SA33_2()
+                        SemanticAction.SA35_1 -> sa.SA35_1()
+                        SemanticAction.SA35_2 -> sa.SA35_2()
                         SemanticAction.SA37 -> sa.SA37()
                         SemanticAction.SA39 -> sa.SA39()
                         SemanticAction.SA41 -> sa.SA41()
@@ -252,28 +262,37 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "id" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.S1)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA13_2)
+                stack.push(Tuple(States.S1, null))
+                stack.push(SemanticAction.SA13_1)
                 stack.push(Token("id", ""))
                 parseOrder.add(13)
             }
             "return" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA,5))
+                stack.push(SemanticAction.SA14)
                 stack.push(Token(";", ""))
-                stack.push(States.X)
+                stack.push(Tuple(States.X,null))
                 stack.push(Token("return", ""))
                 parseOrder.add(14)
             }
             "print" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 5))
+                stack.push(SemanticAction.SA15)
                 stack.push(Token(";", ""))
                 stack.push(Token(")", ""))
-                stack.push(States.L)
+                stack.push(Tuple(States.L, null))
                 stack.push(Token("(", ""))
                 stack.push(Token("print", ""))
                 parseOrder.add(15)
             }
             "input" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA,5))
+                stack.push(SemanticAction.SA16)
                 stack.push(Token(";", ""))
                 stack.push(Token(")", ""))
                 stack.push(Token("id", ""))
@@ -325,7 +344,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 aux.push(stack.pop()!!)
                 stack.push(Tuple(SemanticAction.PA, 2))
                 stack.push(SemanticAction.SA20_2)
-                stack.push(States.S3)
+                stack.push(Tuple(States.S3,null))
                 stack.push(SemanticAction.SA20_1)
                 stack.push(Token("id", ""))
                 parseOrder.add(20)
@@ -338,8 +357,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "=" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.S4)
-                stack.push(States.E)
+                stack.push(Tuple(SemanticAction.PA,3))
+                stack.push(SemanticAction.SA21)
+                stack.push(Tuple(States.S4, null))
+                stack.push(Tuple(States.E,null))
                 stack.push(Token("=", ""))
                 parseOrder.add(21)
             }
@@ -347,7 +368,7 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
                 aux.push(stack.pop()!!)
                 stack.push(Tuple(SemanticAction.PA, 2))
                 stack.push(SemanticAction.SA22_2)
-                stack.push(States.S2)
+                stack.push(Tuple(States.S2,null))
                 stack.push(SemanticAction.SA22_1)
                 stack.push(Token(",", ""))
                 parseOrder.add(22)
@@ -366,7 +387,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "," -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.S2)
+                stack.push(Tuple(SemanticAction.PA,2))
+                stack.push(SemanticAction.SA24_2)
+                stack.push(Tuple(States.S2,null))
+                stack.push(SemanticAction.SA24_1)
                 stack.push(Token(",", ""))
                 parseOrder.add(24)
             }
@@ -384,7 +408,9 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "!", "id", "number", "(", "cadena", "false", "true" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.E)
+                stack.push(Tuple(SemanticAction.PA,1))
+                stack.push(SemanticAction.SA26)
+                stack.push(Tuple(States.E,null))
                 parseOrder.add(26)
             }
             ";" -> {
@@ -401,8 +427,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "var", "if", "while", "id", "return", "print", "input" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.C)
-                stack.push(States.B)
+                stack.push(Tuple(SemanticAction.PA,2))
+                stack.push(SemanticAction.SA28)
+                stack.push(Tuple(States.C,null))
+                stack.push(Tuple(States.B,null))
                 parseOrder.add(28)
             }
             "}" -> {
@@ -419,14 +447,17 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "function" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 9))
+                stack.push(SemanticAction.SA30_2)
                 stack.push(Token("}", ""))
-                stack.push(States.C)
+                stack.push(Tuple(States.C,null))
                 stack.push(Token("{", ""))
                 stack.push(Token(")", ""))
-                stack.push(States.A)
+                stack.push(Tuple(States.A,null))
                 stack.push(Token("(", ""))
                 stack.push(Token("id", ""))
-                stack.push(States.H)
+                stack.push(SemanticAction.SA30_1)
+                stack.push(Tuple(States.H,null))
                 stack.push(Token("function", ""))
                 parseOrder.add(30)
             }
@@ -438,7 +469,9 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "int", "string", "boolean" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.T)
+                stack.push(Tuple(SemanticAction.PA, 1))
+                stack.push(SemanticAction.SA31)
+                stack.push(Tuple(States.T,null))
                 parseOrder.add(31)
             }
             "id" -> {
@@ -455,9 +488,12 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "int", "string", "boolean" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.K)
+                stack.push(Tuple(SemanticAction.PA, 3))
+                stack.push(SemanticAction.SA33_2)
+                stack.push(Tuple(States.K,null))
                 stack.push(Token("id", ""))
-                stack.push(States.T)
+                stack.push(SemanticAction.SA33_1)
+                stack.push(Tuple(States.T,null))
                 parseOrder.add(33)
             }
             ")" -> {
@@ -474,9 +510,12 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "," -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.K)
+                stack.push(Tuple(SemanticAction.PA, 4))
+                stack.push(SemanticAction.SA35_2)
+                stack.push(Tuple(States.K,null))
                 stack.push(Token("id", ""))
-                stack.push(States.T)
+                stack.push(SemanticAction.SA35_1)
+                stack.push(Tuple(States.T,null))
                 stack.push(Token(",", ""))
                 parseOrder.add(35)
             }
@@ -495,8 +534,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "!", "id", "number", "(", "cadena", "false", "true" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.Q)
-                stack.push(States.E)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA37)
+                stack.push(Tuple(States.Q,null))
+                stack.push(Tuple(States.E,null))
                 parseOrder.add(37)
             }
             ")" -> {
@@ -513,8 +554,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "," -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.Q)
-                stack.push(States.E)
+                stack.push(Tuple(SemanticAction.PA, 3))
+                stack.push(SemanticAction.SA39)
+                stack.push(Tuple(States.Q,null))
+                stack.push(Tuple(States.E,null))
                 stack.push(Token(",",""))
                 parseOrder.add(39)
             }
@@ -532,14 +575,18 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type){
             "!" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.E)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA41)
+                stack.push(Tuple(States.E,null))
                 stack.push(Token("!",""))
                 parseOrder.add(41)
             }
             "id", "number", "(", "cadena", "false", "true" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.R)
-                stack.push(States.U)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA42)
+                stack.push(Tuple(States.R,null))
+                stack.push(Tuple(States.U,null))
                 parseOrder.add(42)
             }
             else -> throw Exception("Syntax error. State E received ${token.type} token.")
@@ -550,7 +597,9 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type){
             "<" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.U)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA43)
+                stack.push(Tuple(States.U,null))
                 stack.push((Token("<","")))
                 parseOrder.add(43)
             }
@@ -568,8 +617,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "id", "number", "(", "cadena", "false", "true" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.U2)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA45)
+                stack.push(Tuple(States.U2,null))
+                stack.push(Tuple(States.V,null))
                 parseOrder.add(45)
             }
             else -> throw Exception("Syntax error. State U received ${token.type} token.")
@@ -580,31 +631,41 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when(token.type){
             "+" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA46)
+                stack.push(Tuple(States.V, null))
                 stack.push(Token("+", ""))
                 parseOrder.add(46)
             }
             "-" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA47)
+                stack.push(Tuple(States.V, null))
                 stack.push(Token("-", ""))
                 parseOrder.add(47)
             }
             "*" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA48)
+                stack.push(Tuple(States.V, null))
                 stack.push(Token("*", ""))
                 parseOrder.add(48)
             }
             "/" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA49)
+                stack.push(Tuple(States.V, null))
                 stack.push(Token("/", ""))
                 parseOrder.add(49)
             }
             "%" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA50)
+                stack.push(Tuple(States.V, null))
                 stack.push(Token("%", ""))
                 parseOrder.add(50)
             }
@@ -616,8 +677,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when(token.type){
             "+","-","*","/","%" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.U2)
-                stack.push(States.U1)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA51)
+                stack.push(Tuple(States.U2, null))
+                stack.push(Tuple(States.U1, null))
                 parseOrder.add(51)
             }
             "<",")",",",";" -> {
@@ -635,34 +698,46 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type){
             "id" -> {
                 aux.push(stack.pop()!!)
-                stack.push(States.V1)
+                stack.push(Tuple(SemanticAction.PA, 2))
+                stack.push(SemanticAction.SA53)
+                stack.push(Tuple(States.V1,null))
                 stack.push(Token("id", ""))
                 parseOrder.add(53)
             }
             "number"->{
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 1))
+                stack.push(SemanticAction.SA54)
                 stack.push(Token("number", ""))
                 parseOrder.add(54)
             }
             "(" ->{
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 3))
+                stack.push(SemanticAction.SA55)
                 stack.push(Token("(", ""))
-                stack.push(States.E)
+                stack.push(Tuple(States.E,null))
                 stack.push(Token(")", ""))
                 parseOrder.add(55)
             }
             "cadena" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 1))
+                stack.push(SemanticAction.SA56)
                 stack.push(Token("cadena", ""))
                 parseOrder.add(56)
             }
             "false" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 1))
+                stack.push(SemanticAction.SA57)
                 stack.push(Token("false", ""))
                 parseOrder.add(57)
             }
             "true" -> {
                 aux.push(stack.pop()!!)
+                stack.push(SemanticAction.SA58)
+                stack.push(Tuple(SemanticAction.PA, 1))
                 stack.push(Token("true", ""))
                 parseOrder.add(58)
             }
@@ -674,8 +749,10 @@ class SyntaxSemanticAnalyzer(private val tokenStream: List<Token>, val symbolTab
         when (token.type) {
             "(" -> {
                 aux.push(stack.pop()!!)
+                stack.push(Tuple(SemanticAction.PA, 3))
+                stack.push(SemanticAction.SA59)
                 stack.push(Token(")", ""))
-                stack.push(States.L)
+                stack.push(Tuple(States.L,null))
                 stack.push(Token("(",""))
                 parseOrder.add(59)
             }

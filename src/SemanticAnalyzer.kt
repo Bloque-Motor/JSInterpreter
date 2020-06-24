@@ -2,11 +2,11 @@ import res.Stack
 import res.Tuple
 import res.Types
 
-class SemanticAnalyzer(ssa: SyntaxSemanticAnalyzer) {
+class SemanticAnalyzer(ssa: SyntaxSemanticAnalyzer, private val symbolTable: MutableMap<String, List<Identifier>>) {
 
     private var aux : Stack = ssa.aux
     private var stack : Stack = ssa.stack
-    private lateinit var auxType : Types
+    private var currentFunction = "Global"
 
     fun SA1() {
         stack.pop()
@@ -68,17 +68,27 @@ class SemanticAnalyzer(ssa: SyntaxSemanticAnalyzer) {
         stack.pop()
         (aux.elementAt(1) as Tuple).second = Types.BOOLEAN
     }
-    fun SA13() {
-        //TODO
+    fun SA13_1() {
+        stack.pop()
+        //TODO {if(!TS.containsType(Aux[top]) insertTSG(aux[top], int}
+    }
+    fun SA13_2() {
+        stack.pop()
+        //TODO  {IF (aux[top]==TS.getType(Aux[top-1]) Aux[top-2]=OK}
     }
     fun SA14() {
-        //TODO
+        stack.pop()
+        //TODO  {IF(Aux[top-2] == TS.getReturnType(this)) Aux[top-5] = OK}
     }
     fun SA15() {
-        //TODO
+        stack.pop()
+        if((aux.elementAt(2) as Tuple).second == Types.INT || (aux.elementAt(2) as Tuple).second == Types.STRING){
+            (aux.elementAt(5) as Tuple).second = Types.OK
+        }
     }
     fun SA16() {
-        //TODO
+        stack.pop()
+        //TODO  {IF(!TS.containsType(Aux[top-2]) TS.insertType(Aux[top-2], int); IF(TS.getType(Aux[top-2] == (INT || String)) Aux[top-5] = OK}
     }
     fun SA17() {
         stack.pop()
@@ -104,7 +114,10 @@ class SemanticAnalyzer(ssa: SyntaxSemanticAnalyzer) {
         if ((aux.peek() as Tuple).second == Types.OK) (aux.elementAt(2) as Tuple).second = Types.OK
     }
     fun SA21() {
-        //TODO
+        stack.pop()
+        if((aux.peek() as Tuple).second == Types.OK && (aux.elementAt(1) as Tuple).second == (aux.elementAt(6) as Tuple).second){
+            (aux.elementAt(3) as Tuple).second = Types.OK
+        }
     }
     fun SA22_1() {
         stack.pop()
@@ -114,86 +127,157 @@ class SemanticAnalyzer(ssa: SyntaxSemanticAnalyzer) {
         stack.pop()
         if ((aux.peek() as Tuple).second == Types.OK) (aux.elementAt(1) as Tuple).second = Types.OK
     }
-    fun SA24() {
-        //TODO
+    fun SA24_1() {
+        stack.pop()
+        (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+    }
+    fun SA24_2() {
+        stack.pop()
+        (stack.peek() as Tuple).second = (aux.elementAt(2) as Tuple).second
     }
     fun SA26() {
-        //TODO
-    }
-    fun SA27() {
-        //TODO
-    }
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = (aux.peek() as Tuple).second
+        }
     fun SA28() {
-        //TODO
+        stack.pop()
+        if(((aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) && ((aux.peek() as Tuple).second == Types.OK)){
+            (aux.elementAt(2) as Tuple).second = Types.OK
+        }
     }
-    fun SA30() {
-        //TODO
+    fun SA30_1() {
+        stack.pop()
+        //TODO {IF (!TS.containsType(P[ntop]) TS.insert(P[ntop], function, Aux[top])}
+        //symbolTable.get((stack.peek() as Token).value.toInt())
+    }
+    fun SA30_2() {
+        stack.pop()
+        if(((aux.elementAt(4) as Tuple).second == (aux.elementAt(1) as Tuple).second) && (aux.elementAt(1) as Tuple).second == Types.OK){
+            (aux.elementAt(9) as Tuple).second = Types.OK
+        }
     }
     fun SA31() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = (aux.peek() as Tuple).second
     }
-    fun SA33() {
-        //TODO
+    fun SA33_1() {
+        stack.pop()
+        //TODO  {IF(!TS.containsType(P[ntop]) Ts.insertType(P[ntop], Aux[top])}
     }
-    fun SA35() {
-        //TODO
+    fun SA33_2() {
+        stack.pop()
+        (aux.elementAt(3) as Tuple).second = (aux.peek() as Tuple).second
+    }
+    fun SA35_1() {
+        stack.pop()
+        //TODO  {IF(!TS.containsType(P[ntop]) Ts.insertType(P[ntop], Aux[top])}
+    }
+    fun SA35_2() {
+        stack.pop()
+        (aux.elementAt(4) as Tuple).second = (aux.peek() as Tuple).second
     }
     fun SA37() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK) {
+            (aux.elementAt(2) as Tuple).second = (aux.elementAt(1) as Tuple).second
+        }
+        else if ((aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) {
+            (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+        }
     }
     fun SA39() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK || (aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) {
+            (aux.elementAt(3) as Tuple).second = (aux.elementAt(1) as Tuple).second
+        }
     }
     fun SA41() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.BOOLEAN) (aux.elementAt(2) as Tuple).second = Types.BOOLEAN
     }
     fun SA42() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK) {
+            (aux.elementAt(2) as Tuple).second = (aux.elementAt(1) as Tuple).second
+        }
+        else if ((aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) {
+            (aux.elementAt(2) as Tuple).second = Types.BOOLEAN
+        }
     }
     fun SA43() {
-        //TODO
+        stack.pop()
+        if((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA45() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK) {
+            (aux.elementAt(2) as Tuple).second = (aux.elementAt(1) as Tuple).second
+        }
+        else if ((aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) {
+            (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+        }
     }
     fun SA46() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA47() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA48() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA49() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA50() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.INT) (aux.elementAt(2) as Tuple).second = Types.INT
     }
     fun SA51() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK) {
+            (aux.elementAt(2) as Tuple).second = (aux.elementAt(1) as Tuple).second
+        }
+        else if ((aux.peek() as Tuple).second == (aux.elementAt(1) as Tuple).second) {
+            (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+        }
     }
     fun SA53() {
-        //TODO
+        stack.pop()
+        if ((aux.peek() as Tuple).second == Types.OK) {
+            //TODO (aux.elementAt(2) as Tuple).second = TS.getType((aux.elementAt(1))
+        }
+        //TODO else if ((aux.peek() as Tuple).second == TS.getType((aux.elementAt(1) as Tuple).second)) {
+        //    (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+        //}
     }
     fun SA54() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = Types.INT
     }
     fun SA55() {
-        //TODO
+       stack.pop()
+        (aux.elementAt(3) as Tuple).second = (aux.elementAt(1) as Tuple).second
     }
     fun SA56() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = Types.STRING
     }
     fun SA57() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = Types.BOOLEAN
     }
     fun SA58() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(1) as Tuple).second = Types.BOOLEAN
     }
     fun SA59() {
-        //TODO
+        stack.pop()
+        (aux.elementAt(3) as Tuple).second = (aux.elementAt(1) as Tuple).second
     }
 
     fun popAux(num : Int) {
