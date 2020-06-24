@@ -35,6 +35,8 @@ class FilePrinter {
     var t = 0
     var checkGlobal = true
     var checkFunction = false
+    var manualUpdate = false
+    var tokenNumber = "0"
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -118,7 +120,12 @@ class FilePrinter {
                     if(checkFunction) {
                         if(!checkGlobal){
                         symbolTable.put(t, symbolCheck)
-                        t++
+
+                            if(auxListGlobal.contains(token)){
+                                manualUpdate = true
+                                tokenNumber = t.toString()
+                            }
+                            t++
                         }else{
                             if(!auxListGlobal.contains(token)){
                                 auxSymbolMap.put(token, t)
@@ -134,8 +141,15 @@ class FilePrinter {
                         t++
                     }
                 }
-                line = "<id, ${auxSymbolMap.get(token)}>"
-                tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
+                if(!manualUpdate) {
+                    line = "<id, ${auxSymbolMap.get(token)}>"
+                    tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
+                }else{
+                    line = "<id, $tokenNumber>"
+                    tokenStream.add(Token("id", tokenNumber))
+                    manualUpdate = false
+
+                }
             }
         }
         tokenList.add(line)
