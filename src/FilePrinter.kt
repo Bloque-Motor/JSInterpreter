@@ -129,6 +129,7 @@ class FilePrinter {
                             }
                         }
                     }else{
+                        auxSymbolMap.put(token, t)
                         symbolTable.put(t, symbolCheck)
                         t++
                     }
