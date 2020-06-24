@@ -146,7 +146,7 @@ class FilePrinter {
 
                     for(simboloTablaCheck in symbolTable){
 
-                        if(simboloTablaCheck.value.lex.equals(token)){
+                        if(simboloTablaCheck.value.lex.equals(token) && !simboloTablaCheck.value.tableName.equals("Global")){
                             tokenNumber = simboloTablaCheck.value.id.toString()
                             manualUpdate = true
                         }
