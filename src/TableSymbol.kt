@@ -11,7 +11,7 @@ class TableSymbol (val id: Int, val lex: String, val tableName: String){
             field = value
         }
 
-    var desplazamiento: Int? = null
+    var desplazamiento: Int? = 0
         get() = field
         set(value) {
             field = value

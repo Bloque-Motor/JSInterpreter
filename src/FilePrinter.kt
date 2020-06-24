@@ -141,6 +141,18 @@ class FilePrinter {
                         t++
                     }
                 }
+
+                if(auxListActual.contains(token) && !localFunctionName.equals("Global")){
+
+                    for(simboloTablaCheck in symbolTable){
+
+                        if(simboloTablaCheck.value.lex.equals(token)){
+                            tokenNumber = simboloTablaCheck.value.id.toString()
+                            manualUpdate = true
+                        }
+
+                    }
+                }
                 if(!manualUpdate) {
                     line = "<id, ${auxSymbolMap.get(token)}>"
                     tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
