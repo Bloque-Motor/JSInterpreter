@@ -2,10 +2,10 @@ import java.io.File
 
 class FilePrinter {
 
-    private val tokenFileName = """Output\Tokens.txt"""
-    private val symbolTableFile = """Output\SymbolTable.txt"""
-    private val errorFile = """Output\Errors.txt"""
-    private val parseFileName = """Output\ParseFile.txt"""
+    private val tokenFileName = """/Users/inigoar/Downloads/PDL/token.txt"""
+    private val symbolTableFile = """/Users/inigoar/Downloads/PDL/tablaSimbolos.txt"""
+    private val errorFile = """/Users/inigoar/Downloads/PDL/errores.txt"""
+    private val parseFileName = """/Users/inigoar/Downloads/PDL/parser.txt"""
 
     var assignments = mutableListOf<String>()
     var delimiters = mutableListOf<String>()
@@ -14,11 +14,12 @@ class FilePrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
-    var symbolTable = mutableListOf<Identifier>()
+    var symbolTable = mutableMapOf<Int,TableSymbol>()
         get() = field
         set(value) {
             field = value
         }
+
     var tokenStream = mutableListOf<Token>()
         get() = field
     var auxSymbolMap = HashMap<String, Int>()
@@ -26,6 +27,16 @@ class FilePrinter {
     var tokenList = mutableListOf<String>()
     var errors = mutableListOf<String>()
 
+    var boolFunction = false
+    var local = 0
+    var localFunctionName = "Global"
+    var functionName = ""
+    var numId = 0
+    var t = 0
+    var checkGlobal = true
+    var checkFunction = false
+    var manualUpdate = false
+    var tokenNumber = "0"
 
     fun addToken(type: Int, token: String){
         var line = ""
@@ -44,19 +55,115 @@ class FilePrinter {
             4->{
                 line = "<$token, >"
                 tokenStream.add(Token(token, ""))
-
+                if(token.equals("function")){
+                    boolFunction = true
+                }
+                else if(token.equals("var")){
+                 checkGlobal = false
+                }
+                else if(token.equals(";")){
+                    checkGlobal = true
+                }
+                else if(boolFunction && token.equals("{")){
+                    local++
+                    checkFunction = true
+                }
+                else if(boolFunction && token.equals("}")){
+                    local--
+                    if(local == 0){
+                        boolFunction = false
+                        localFunctionName = "Global"
+                        checkFunction = false
+                        functionName = ""
+                        numId = 0
+                    }
+                }
             }
             5->{
-                if (!auxSymbolMap.containsKey(token)){
-                    var symbol = Identifier(symbolTable.size, token)
-                    auxSymbolMap.put(token, symbolTable.size)
-                    symbolTable.add(symbol)
+                if(boolFunction){
+                    if(numId == 0) {
+                            functionName = token
+                    }
+                    else if(numId == 1){
+                            localFunctionName = functionName
+                    }
+                        numId++
+                    }
+
+                var symbolCheck = TableSymbol(t,token, localFunctionName)
+
+                if(!auxSymbolMap.containsKey(token)) {
+                    auxSymbolMap.put(token, t)
                 }
-                line = "<id, ${auxSymbolMap.get(token)}>"
-                tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
+
+                var auxListActual = mutableListOf<String>()
+                for(simbolos in symbolTable){
+
+                    if(simbolos.value.tableName.equals(localFunctionName)){
+                        if(!auxListActual.contains(simbolos.value.lex)) {
+                            auxListActual.add(simbolos.value.lex)
+                        }
+                    }
+                }
+
+                var auxListGlobal = mutableListOf<String>()
+
+                for(simbolosGlobal in symbolTable){
+                    if(simbolosGlobal.value.tableName.equals("Global")){
+                        if(!auxListGlobal.contains(simbolosGlobal.value.lex)) {
+                            auxListGlobal.add(simbolosGlobal.value.lex)
+                        }
+                    }
+                }
+
+                if(!auxListActual.contains(token)){
+                    if(checkFunction) {
+                        if(!checkGlobal){
+                        symbolTable.put(t, symbolCheck)
+
+                            if(auxListGlobal.contains(token)){
+                                manualUpdate = true
+                                tokenNumber = t.toString()
+                            }
+                            t++
+                        }else{
+                            if(!auxListGlobal.contains(token)){
+                                auxSymbolMap.put(token, t)
+                                var simboloGlobal = TableSymbol(t,token, "Global")
+                                symbolTable.put(t, simboloGlobal)
+                                t++
+
+                            }
+                        }
+                    }else{
+                        auxSymbolMap.put(token, t)
+                        symbolTable.put(t, symbolCheck)
+                        t++
+                    }
+                }
+
+                if(auxListActual.contains(token) && !localFunctionName.equals("Global")){
+
+                    for(simboloTablaCheck in symbolTable){
+
+                        if(simboloTablaCheck.value.lex.equals(token)){
+                            tokenNumber = simboloTablaCheck.value.id.toString()
+                            manualUpdate = true
+                        }
+
+                    }
+                }
+                if(!manualUpdate) {
+                    line = "<id, ${auxSymbolMap.get(token)}>"
+                    tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
+                }else{
+                    line = "<id, $tokenNumber>"
+                    tokenStream.add(Token("id", tokenNumber))
+                    manualUpdate = false
+
+                }
             }
         }
-
         tokenList.add(line)
     }
 
@@ -86,30 +193,45 @@ class FilePrinter {
             for(lines in tokenList){
                 out.println(lines)
             }
-
         }
     }
 
     fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
+        var tableNumber = 2
+        var nameTable = ""
+        var nombresTablas = mutableListOf<String>()
+
+        for(name in symbolTable){
+
+            if(!nombresTablas.contains(name.value.tableName)){
+
+                nombresTablas.add(name.value.tableName)
+
+            }
+        }
         sf.createNewFile()
         sf.printWriter().use { out ->
-            out.println("TABLA DE IDENTIFICADORES #1:")
-            out.println()
-            for (symbol in symbolTable){
-                out.println("* LEXEMA : '${symbol.lex}'")
+
+    if(nombresTablas.contains("Global")) {
+        nombresTablas.remove("Global")
+        out.println("TABLA GLOBAL #1:")
+        out.println()
+        for (symbol in symbolTable) {
+            if (symbol.value.tableName.equals("Global")) {
+                out.println("* LEXEMA : '${symbol.value.lex}'")
                 out.println("  ATRIBUTOS :")
-                if(symbol.type == Identifier.Type.FUNCTION){
+                if (symbol.value.type == Identifier.Type.FUNCTION) {
                     out.println("  + tipo: 'funcion'")
-                    when(symbol.returnType){
+                    when (symbol.value.type) {
                         Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
                         Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
                         Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
-                        else->out.println("  + tipoRetorno: 'void'")
+                        else -> out.println("  + tipoRetorno: 'void'")
                     }
                     var params = ""
-                    for (param in symbol.parameterList){
-                        when(param){
+                    for (param in symbol.value.parameterList) {
+                        when (param) {
                             Identifier.Type.INT -> params += "entero, "
                             Identifier.Type.BOOLEAN -> params += "logico, "
                             Identifier.Type.STRING -> params += "cadena, "
@@ -117,19 +239,45 @@ class FilePrinter {
                     }
                     params = params.dropLast(2)
                     out.println("  + tipoParametros: '$params'")
-                    out.println("  + numParametros: '${symbol.parameterCount}'")
-                }else{
-                    when(symbol.type){
+                    out.println("  + numParametros: '${symbol.value.parameterCount}'")
+                } else {
+                    when (symbol.value.type) {
                         Identifier.Type.INT -> out.println("  + tipo: 'entero'")
                         Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
                         Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
                     }
                 }
-                out.println("  + id: ${symbol.id}")
+
+
+                out.println("  + id: ${symbol.value.id}")
                 out.println("-------------------------")
+                out.println()
             }
         }
     }
+            if(nombresTablas.size>=1){
+             for(name in nombresTablas) {
+                 nameTable = name
+                 out.println("TABLA DE LA FUNCION $nameTable #$tableNumber:")
+                 out.println()
+
+                 for (simbolo in symbolTable) {
+                     if (simbolo.value.tableName.equals(nameTable)){
+                         out.println("* LEXEMA : '${simbolo.value.lex}'")
+                         out.println("  ATRIBUTOS :")
+                         out.println("  + id: ${simbolo.value.id}")
+                         out.println()
+                     }
+                 }
+                 out.println("-------------------------")
+                 out.println()
+                 tableNumber++
+             }
+
+            }
+        }
+    }
+
 
     fun makeOutputDir() {
         val outDir = File("/Output/")
