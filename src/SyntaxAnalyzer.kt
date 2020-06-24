@@ -1,4 +1,4 @@
-class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTableMap: MutableMap<String, List<Identifier>>) {
+class SyntaxAnalyzer(private val tokenStream: List<Token>, val symbolTableMap: MutableMap<Int, TableSymbol>) {
 
     enum class States {
         P, B, B1, T, S, S1, S2, S3, S4, X, C, F, H, A, K, L, Q, E, R, U, U1, U2, V, V1

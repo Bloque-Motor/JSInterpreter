@@ -14,11 +14,12 @@ class FilePrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
-    var symbolTable = mutableMapOf<String,List<Identifier>>()
-        get() = field
+    var symbolTable = mutableMapOf<Int,TableSymbol>()
+        /*get() = field
         set(value) {
             field = value
-        }
+        }*/
+
     var tokenStream = mutableListOf<Token>()
         get() = field
     var auxSymbolMap = HashMap<String, Int>()
@@ -59,15 +60,12 @@ class FilePrinter {
                  checkGlobal = false
                 }
                 else if(token.equals(";")){
-
                     checkGlobal = true
-
                 }
                 else if(boolFunction && token.equals("{")){
                     local++
                     checkFunction = true
                 }
-
                 else if(boolFunction && token.equals("}")){
                     local--
                     if(local == 0){
@@ -76,12 +74,10 @@ class FilePrinter {
                         checkFunction = false
                         functionName = ""
                         numId = 0
-
                     }
                 }
             }
             5->{
-
                 if(boolFunction){
                     if(numId == 0) {
                             functionName = token
@@ -92,109 +88,28 @@ class FilePrinter {
                         numId++
                     }
 
-                var auxListGlobal = mutableListOf<String>()
-                var allListGlobal = symbolTable.get("Global")
-                if(allListGlobal!=null) {
-                    for (symbolI in allListGlobal) {
-                        auxListGlobal.add(symbolI.lex)
-                    }
-                }
-                if(localFunctionName.equals("Global")) {
+                var symbolCheck = TableSymbol(t,token, localFunctionName)
 
-                    //mirar si está contenido
-                    if(!auxListGlobal.contains(token)) {
-                        var symbol = Identifier(t, token)
-                        auxSymbolMap.put(token, t)
-                        var auxList = mutableListOf<Identifier>()
-
-                        if (symbolTable.containsKey(localFunctionName)) {
-                            for (iden in symbolTable.get(localFunctionName)!!) {
-                                auxList.add(iden)
-                            }
-                            auxList.add(symbol)
-                            symbolTable.put(localFunctionName, auxList)
-                        } else {
-                            auxList.add(symbol)
-                            symbolTable.put(localFunctionName, auxList)
-                        }
-                        t++
-                    }
-                }else{
-
-                    //mirar si está contenido
-                    var auxListLocal = mutableListOf<String>()
-                    var allListLocal = symbolTable.get(localFunctionName)
-                    if(allListLocal!=null) {
-                        for (symbolL in allListLocal) {
-                            auxListLocal.add(symbolL.lex)
-                        }
-                    }
-
-                    if(checkFunction) {
-                        if(!checkGlobal) {
-                            var symbol = Identifier(t, token)
-                            auxSymbolMap.put(token, t)
-                            var auxList = mutableListOf<Identifier>()
-
-                            if (symbolTable.containsKey(localFunctionName)) {
-                                for (iden in symbolTable.get(localFunctionName)!!) {
-                                    auxList.add(iden)
-                                }
-                                auxList.add(symbol)
-                                symbolTable.put(localFunctionName, auxList)
-                            } else {
-                                auxList.add(symbol)
-                                symbolTable.put(localFunctionName, auxList)
-                            }
-                            t++
-                        }else{
-
-                            if(!auxListGlobal.contains(token) && !auxListLocal.contains(token)){
-                                var symbol = Identifier(t, token)
-                                auxSymbolMap.put(token, t)
-                                var auxList = mutableListOf<Identifier>()
-
-                                if (symbolTable.containsKey("Global")) {
-                                    for (iden in symbolTable.get("Global")!!) {
-                                        auxList.add(iden)
-                                    }
-                                    auxList.add(symbol)
-                                    symbolTable.put("Global", auxList)
-                                } else {
-                                    auxList.add(symbol)
-                                    symbolTable.put("Global", auxList)
-                                }
-                                t++
-                            }
-
-                        }
-                    }else{
-
-                        var symbol = Identifier(t, token)
-                        auxSymbolMap.put(token, t)
-                        var auxList = mutableListOf<Identifier>()
-
-                        if (symbolTable.containsKey(localFunctionName)) {
-                            for (iden in symbolTable.get(localFunctionName)!!) {
-                                auxList.add(iden)
-                            }
-                            auxList.add(symbol)
-                            symbolTable.put(localFunctionName, auxList)
-                        } else {
-                            auxList.add(symbol)
-                            symbolTable.put(localFunctionName, auxList)
-                        }
-                        t++
-
-                    }
-
+                if(!auxSymbolMap.containsKey(token)) {
+                    auxSymbolMap.put(token, t)
                 }
 
+                var auxListActual = mutableListOf<String>()
+                for(simbolos in symbolTable){
+                    if(simbolos.value.tableName.equals(localFunctionName)){
+                        if(!auxListActual.contains(simbolos.value.lex)) {
+                            auxListActual.add(simbolos.value.lex)
+                        }
+                    }
+                }
+                if(!auxListActual.contains(token)){
+                    symbolTable.put(t, symbolCheck)
+                    t++
+                }
                 line = "<id, ${auxSymbolMap.get(token)}>"
                 tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
             }
         }
-
         tokenList.add(line)
     }
 
@@ -231,70 +146,82 @@ class FilePrinter {
     fun makeSymbolTableFile(){
         val sf = File(symbolTableFile)
         var tableNumber = 2
+        var nameTable = ""
         var nombresTablas = mutableListOf<String>()
+
+        for(name in symbolTable){
+
+            if(!nombresTablas.contains(name.value.tableName)){
+
+                nombresTablas.add(name.value.tableName)
+
+            }
+        }
         sf.createNewFile()
         sf.printWriter().use { out ->
-            if(symbolTable.isNotEmpty()) {
-                for (keyName in symbolTable) {
-                    nombresTablas.add(keyName.key)
+
+    if(nombresTablas.contains("Global")) {
+        nombresTablas.remove("Global")
+        out.println("TABLA GLOBAL #1:")
+        out.println()
+        for (symbol in symbolTable) {
+            if (symbol.value.tableName.equals("Global")) {
+                out.println("* LEXEMA : '${symbol.value.lex}'")
+                out.println("  ATRIBUTOS :")
+                if (symbol.value.type == Identifier.Type.FUNCTION) {
+                    out.println("  + tipo: 'funcion'")
+                    when (symbol.value.type) {
+                        Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
+                        else -> out.println("  + tipoRetorno: 'void'")
+                    }
+                    var params = ""
+                    for (param in symbol.value.parameterList) {
+                        when (param) {
+                            Identifier.Type.INT -> params += "entero, "
+                            Identifier.Type.BOOLEAN -> params += "logico, "
+                            Identifier.Type.STRING -> params += "cadena, "
+                        }
+                    }
+                    params = params.dropLast(2)
+                    out.println("  + tipoParametros: '$params'")
+                    out.println("  + numParametros: '${symbol.value.parameterCount}'")
+                } else {
+                    when (symbol.value.type) {
+                        Identifier.Type.INT -> out.println("  + tipo: 'entero'")
+                        Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
+                        Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
+                    }
                 }
-                if (symbolTable.containsKey("Global")) {
-                    nombresTablas.remove("Global")
-                //printer de la tabla de simbolos global
-                out.println("TABLA GLOBAL #1:")
+
+
+                out.println("  + id: ${symbol.key}")
+                out.println("  + id: ${symbol.key}")
+                out.println("-------------------------")
                 out.println()
-                for (symbol in symbolTable.get("Global")!!) {
-                    out.println("* LEXEMA : '${symbol.lex}'")
-                    out.println("  ATRIBUTOS :")
-                    if (symbol.type == Identifier.Type.FUNCTION) {
-                        out.println("  + tipo: 'funcion'")
-                        when (symbol.returnType) {
-                            Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
-                            Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-                            Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
-                            else -> out.println("  + tipoRetorno: 'void'")
-                        }
-                        var params = ""
-                        for (param in symbol.parameterList) {
-                            when (param) {
-                                Identifier.Type.INT -> params += "entero, "
-                                Identifier.Type.BOOLEAN -> params += "logico, "
-                                Identifier.Type.STRING -> params += "cadena, "
-                            }
-                        }
-                        params = params.dropLast(2)
-                        out.println("  + tipoParametros: '$params'")
-                        out.println("  + numParametros: '${symbol.parameterCount}'")
-                    } else {
-                        when (symbol.type) {
-                            Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                            Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                            Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
-                        }
-                    }
-                    out.println("  + id: ${symbol.id}")
-                    out.println("-------------------------")
-                }
             }
+        }
+    }
+            if(nombresTablas.size>=1){
+             for(name in nombresTablas) {
+                 nameTable = name
+                 out.println("TABLA DE LA FUNCION $nameTable #$tableNumber:")
+                 out.println()
 
-                //printer tablas anidadas
-                if(nombresTablas.size >= 1) {
-                    for (tableName in nombresTablas) {
-                        out.println()
-                        out.println("TABLA DE LA FUNCION $tableName #$tableNumber:")
-                        out.println()
-                        for (symbolA in symbolTable.get(tableName)!!) {
+                 for (simbolo in symbolTable) {
+                     if (simbolo.value.tableName.equals(nameTable)){
+                         out.println("* LEXEMA : '${simbolo.value.lex}'")
+                         out.println("  ATRIBUTOS :")
+                         out.println("  + id: ${simbolo.key}")
+                         out.println()
+                     }
+                 }
+                 out.println("-------------------------")
+                 out.println()
+                 tableNumber++
+             }
 
-                            out.println("* LEXEMA : '${symbolA.lex}'")
-                            out.println("  ATRIBUTOS :")
-                            out.println("  + id: ${symbolA.id}")
-
-                        }
-
-                        out.println("-------------------------")
-                        tableNumber++
-                    }
-                }
             }
         }
     }

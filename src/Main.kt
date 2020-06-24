@@ -4,7 +4,7 @@ import kotlin.system.exitProcess
 fun main() {
     println("Enter filename to parse:")
     var tokenStream: MutableList<Token>
-    var symbolTable: MutableMap<String, List<Identifier>>
+    var symbolTable: MutableMap<Int, TableSymbol>
     val fileName: String? = readLine()
     val file = File(fileName)
     var lines = 0
