@@ -96,15 +96,42 @@ class FilePrinter {
 
                 var auxListActual = mutableListOf<String>()
                 for(simbolos in symbolTable){
+
                     if(simbolos.value.tableName.equals(localFunctionName)){
                         if(!auxListActual.contains(simbolos.value.lex)) {
                             auxListActual.add(simbolos.value.lex)
                         }
                     }
                 }
+
+                var auxListGlobal = mutableListOf<String>()
+
+                for(simbolosGlobal in symbolTable){
+                    if(simbolosGlobal.value.tableName.equals("Global")){
+                        if(!auxListActual.contains(simbolosGlobal.value.lex)) {
+                            auxListActual.add(simbolosGlobal.value.lex)
+                        }
+                    }
+                }
+
                 if(!auxListActual.contains(token)){
-                    symbolTable.put(t, symbolCheck)
-                    t++
+                    if(checkFunction) {
+                        if(!checkGlobal){
+                        symbolTable.put(t, symbolCheck)
+                        t++
+                        }else{
+                            if(!auxListGlobal.contains(token)){
+                                auxSymbolMap.put(token, t)
+                                var simboloGlobal = TableSymbol(t,token, "Global")
+                                symbolTable.put(t, simboloGlobal)
+                                t++
+
+                            }
+                        }
+                    }else{
+                        symbolTable.put(t, symbolCheck)
+                        t++
+                    }
                 }
                 line = "<id, ${auxSymbolMap.get(token)}>"
                 tokenStream.add(Token("id", auxSymbolMap.get(token).toString()))
@@ -139,7 +166,6 @@ class FilePrinter {
             for(lines in tokenList){
                 out.println(lines)
             }
-
         }
     }
 
@@ -196,8 +222,7 @@ class FilePrinter {
                 }
 
 
-                out.println("  + id: ${symbol.key}")
-                out.println("  + id: ${symbol.key}")
+                out.println("  + id: ${symbol.value.id}")
                 out.println("-------------------------")
                 out.println()
             }
@@ -213,7 +238,7 @@ class FilePrinter {
                      if (simbolo.value.tableName.equals(nameTable)){
                          out.println("* LEXEMA : '${simbolo.value.lex}'")
                          out.println("  ATRIBUTOS :")
-                         out.println("  + id: ${simbolo.key}")
+                         out.println("  + id: ${simbolo.value.id}")
                          out.println()
                      }
                  }
