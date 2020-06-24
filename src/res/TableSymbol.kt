@@ -1,11 +1,12 @@
+package res
+
 class TableSymbol (val id: Int, val lex: String, val tableName: String){
-    enum class Type {FUNCTION, INT, BOOLEAN, STRING, VOID}
-    var type: Type? = null
+    var type: Types? = null
         get() = field
         set(value) {
             field = value
         }
-    var returnType: Type? = null
+    var returnType: Types? = null
         get() = field
         set(value) {
             field = value
@@ -18,9 +19,9 @@ class TableSymbol (val id: Int, val lex: String, val tableName: String){
         }
 
     var parameterCount = 0
-    var parameterList = mutableListOf<Type>()
+    var parameterList = mutableListOf<Types>()
 
-    fun addParameter(type: Type){
+    fun addParameter(type: Types){
         parameterList.add(type)
         parameterCount++
     }

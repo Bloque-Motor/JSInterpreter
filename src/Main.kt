@@ -1,3 +1,5 @@
+import res.TableSymbol
+import res.Token
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -42,7 +44,7 @@ fun main() {
     var parseOrder = mutableListOf<Int>()
     try {
         parseOrder = ssa.parse()
-        fp.symbolTable = ssa.symbolTableMap //as MutableMap<String, List<Identifier>>
+        fp.symbolTable = ssa.symbolTable //as MutableMap<String, List<Identifier>>
     }catch (e: Exception){
         fp.addError(e.message!!)
         errors++

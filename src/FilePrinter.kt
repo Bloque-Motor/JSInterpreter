@@ -1,3 +1,6 @@
+import res.TableSymbol
+import res.Token
+import res.Types
 import java.io.File
 
 class FilePrinter {
@@ -15,7 +18,7 @@ class FilePrinter {
     var ariOps = mutableListOf<String>()
     var relationOps = mutableListOf<String>()
 
-    var symbolTable = mutableMapOf<Int,TableSymbol>()
+    var symbolTable = mutableMapOf<Int, TableSymbol>()
         get() = field
         set(value) {
             field = value
@@ -91,7 +94,7 @@ class FilePrinter {
                         numId++
                     }
 
-                var symbolCheck = TableSymbol(t,token, localFunctionName)
+                var symbolCheck = TableSymbol(t, token, localFunctionName)
 
                 if(!auxSymbolMap.containsKey(token)) {
                     auxSymbolMap.put(token, t)
@@ -130,7 +133,7 @@ class FilePrinter {
                         }else{
                             if(!auxListGlobal.contains(token)){
                                 auxSymbolMap.put(token, t)
-                                var simboloGlobal = TableSymbol(t,token, "Global")
+                                var simboloGlobal = TableSymbol(t, token, "Global")
                                 symbolTable.put(t, simboloGlobal)
                                 t++
 
@@ -222,20 +225,20 @@ class FilePrinter {
             if (symbol.value.tableName.equals("Global")) {
                 out.println("* LEXEMA : '${symbol.value.lex}'")
                 out.println("  ATRIBUTOS :")
-                if (symbol.value.type == Identifier.Type.FUNCTION) {
+                if (symbol.value.type == Types.FUNCTION) {
                     out.println("  + tipo: 'funcion'")
                     when (symbol.value.type) {
-                        Identifier.Type.INT -> out.println("  + tipoRetorno: 'entero'")
-                        Identifier.Type.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-                        Identifier.Type.STRING -> out.println("  + tipoRetorno: 'cadena'")
+                        Types.INT -> out.println("  + tipoRetorno: 'entero'")
+                        Types.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
+                        Types.STRING -> out.println("  + tipoRetorno: 'cadena'")
                         else -> out.println("  + tipoRetorno: 'void'")
                     }
                     var params = ""
                     for (param in symbol.value.parameterList) {
                         when (param) {
-                            Identifier.Type.INT -> params += "entero, "
-                            Identifier.Type.BOOLEAN -> params += "logico, "
-                            Identifier.Type.STRING -> params += "cadena, "
+                            Types.INT -> params += "entero, "
+                            Types.BOOLEAN -> params += "logico, "
+                            Types.STRING -> params += "cadena, "
                         }
                     }
                     params = params.dropLast(2)
@@ -243,9 +246,9 @@ class FilePrinter {
                     out.println("  + numParametros: '${symbol.value.parameterCount}'")
                 } else {
                     when (symbol.value.type) {
-                        Identifier.Type.INT -> out.println("  + tipo: 'entero'")
-                        Identifier.Type.BOOLEAN -> out.println("  + tipo: 'logico'")
-                        Identifier.Type.STRING -> out.println("  + tipo: 'cadena'")
+                        Types.INT -> out.println("  + tipo: 'entero'")
+                        Types.BOOLEAN -> out.println("  + tipo: 'logico'")
+                        Types.STRING -> out.println("  + tipo: 'cadena'")
                     }
                 }
 
@@ -267,6 +270,7 @@ class FilePrinter {
                          out.println("* LEXEMA : '${simbolo.value.lex}'")
                          out.println("  ATRIBUTOS :")
                          out.println("  + id: ${simbolo.value.id}")
+                         out.println("  + tipo: ${simbolo.value.type}")
                          out.println()
                      }
                  }

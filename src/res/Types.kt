@@ -1,5 +1,5 @@
 package res
 
 enum class Types {
-    OK, ERROR, BOOLEAN, VOID, INT, STRING
+    OK, ERROR, BOOLEAN, VOID, INT, STRING, FUNCTION
 }
