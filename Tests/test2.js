@@ -1,5 +1,6 @@
-var int a = 2, b = 3;
+var int a = 2;
 function int suma(int i, int j) {
+    int b = 0;
     return i + j;
 }
 

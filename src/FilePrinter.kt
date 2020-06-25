@@ -228,34 +228,15 @@ class FilePrinter {
                 if (symbol.value.type == Types.FUNCTION) {
                     out.println("  + tipo: '${symbol.value.type}'")
                     out.println("  + tipoRetorno: '${symbol.value.returnType}'")
-//                    when (symbol.value.returnType) {
-//                        Types.INT -> out.println("  + tipoRetorno: 'entero'")
-//                        Types.BOOLEAN -> out.println("  + tipoRetorno: 'logico'")
-//                        Types.STRING -> out.println("  + tipoRetorno: 'cadena'")
-//                        else -> out.println("  + tipoRetorno: 'void'")
-//                    }
                     var params = ""
                     for (param in symbol.value.parameterList) {
                         params += "$param, "
-//                        when (param) {
-//                            Types.INT -> params += "entero, "
-//                            Types.BOOLEAN -> params += "logico, "
-//                            Types.STRING -> params += "cadena, "
-//                            else -> addError("Incompatible parameterType")
-//                        }
                     }
                     params = params.dropLast(2)
                     out.println("  + tipoParametros: '$params'")
                     out.println("  + numParametros: '${symbol.value.parameterCount}'")
                 } else {
                     out.println("  + tipo: '${symbol.value.type}'")
-
-//                    when (symbol.value.type) {
-//                        Types.INT -> out.println("  + tipo: 'entero'")
-//                        Types.BOOLEAN -> out.println("  + tipo: 'logico'")
-//                        Types.STRING -> out.println("  + tipo: 'cadena'")
-//                        else -> addError("Incompatible parameterType")
-//                    }
                 }
 
 

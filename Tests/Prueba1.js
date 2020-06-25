@@ -1,10 +1,20 @@
-function int test1(int i, boolean ok){ var int num;
-    input(num);
-    while(i < 4){
-        num -= i;
-        if (num < 8) ok = true;
-    }
-    var string hola = 'Hola caracola';
-    print(hola);
-    return num;
+var int y;
+var string z;
+
+function int Func1 (int x, boolean y)
+{  var boolean w;
+    x = 13;
+    z = 'hola';
+    return x;
+     //return y;
 }
+
+function int Func2 (int z, int n)
+{
+    n = 13;
+    z = y;
+    return 5;
+}
+
+print (w);
+y = 24;
