@@ -141,7 +141,7 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     }
     fun SA21() {
         stack.pop()
-        if((aux.peek() as Tuple).second == Types.OK && (aux.elementAt(1) as Tuple).second == (aux.elementAt(6) as Tuple).second){
+        if((aux.peek() as Tuple).second == Types.OK && (aux.elementAt(1) as Tuple).second == (aux.elementAt(8) as Tuple).second){
             (aux.elementAt(3) as Tuple).second = Types.OK
         }
         else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(1) as Tuple).second} expected ${(aux.elementAt(6) as Tuple).second}")
@@ -158,7 +158,7 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     }
     fun SA24_1() {
         stack.pop()
-        (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+        (aux.peek() as Tuple).second = (aux.elementAt(3) as Tuple).second
     }
     fun SA24_2() {
         stack.pop()

@@ -737,8 +737,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, var symbolTable: Muta
             }
             "true" -> {
                 aux.push(stack.pop()!!)
-                stack.push(SemanticAction.SA58)
                 stack.push(Tuple(SemanticAction.PA, 1))
+                stack.push(SemanticAction.SA58)
                 stack.push(Token("true", ""))
                 parseOrder.add(58)
             }
