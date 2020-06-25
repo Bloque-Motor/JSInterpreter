@@ -1,14 +1,10 @@
-function boolean main (string hello, int world){
-    var int a = 1;
-    var int b = 2;
-    var int c = 3;
-    var int d = 4;
-    var boolean t = true;
-    var boolean f = false;
-    while(0 < d){
-        f = c*b+a;
+function boolean test5 (string name, int age, boolean isClient){
+    if (!isClient) isClient = true;
+    var string  u = 'underage';
+    while (age < 18){
+        print(isClient);
+        print(u);
+        age = age + 1;
     }
-    var boolean r = f;
-    if(c < 50) r = t;
-    return r;
+    return isClient;
 }

@@ -1,11 +1,11 @@
-function int test2(int i, boolean ok){
+function int test1(int i, boolean ok){
     var int num;
     input(num);
-    while(i < 'patata'){
+    while(i < 4){
         num -= i;
-        if (num < ok) ok = true;
+        if (num < 8) ok = true;
     }
     var string hola = 'Hola caracola';
     print(hola);
-    return ok;
+    return hola;
 }

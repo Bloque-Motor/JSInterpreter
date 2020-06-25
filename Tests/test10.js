@@ -1,9 +1,19 @@
-function test5 (string name, int age, boolean isClient){
-    if (!isClient) isClient = true;
-    var string = 'underage'
-    while (age < 18){
-        print(name);
-        print(u);
-        age = age + string;
+a = 5;
+function int test1(int i, boolean ok){
+    input(num);
+    var boolean a = true;
+    var string hola = 'Hola caracola';
+    if(i < num + 1){
+        while(ok){
+            print(hola);
+        }
     }
+    return num;
+}
+
+
+function string prueba(string st){
+    print(st);
+    b = 33000;
+    return prueba(st);
 }

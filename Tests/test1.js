@@ -3,7 +3,7 @@ function int test1(int i, boolean ok){
     input(num);
     var boolean a = true;
     var string hola = 'Hola caracola';
-    if(i + num + 1){
+    if(i < num + 1){
         while(ok){
             print(hola);
         }

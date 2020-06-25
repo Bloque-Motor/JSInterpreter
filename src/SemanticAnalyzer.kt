@@ -37,14 +37,14 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
         if ((aux.elementAt(2) as Tuple).second == Types.BOOLEAN && (aux.peek() as Tuple).second == Types.OK) {
             (aux.elementAt(5) as Tuple).second = Types.OK
         }
-        else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(2) as Tuple)} expected BOOLEAN.")
+        else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(2) as Tuple).second} expected BOOLEAN.")
     }
     fun SA6() {
         stack.pop()
         if ((aux.elementAt(4) as Tuple).second == Types.BOOLEAN && (aux.elementAt(1) as Tuple).second == Types.OK) {
             (aux.elementAt(7) as Tuple).second = Types.OK
         }
-        else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(4) as Tuple)} expected BOOLEAN.")
+        else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(4) as Tuple).second} expected BOOLEAN.")
     }
     fun SA7() {
         stack.pop()
