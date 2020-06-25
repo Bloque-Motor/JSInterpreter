@@ -1,11 +1,16 @@
+a = 5;
 function int test1(int i, boolean ok){
-    var int num;
     input(num);
-    while(i < 4){
-        num -= i;
-        if (num < 8) ok = true;
-    }
     var string hola = 'Hola caracola';
-    print(hola);
+    if(i < num){
+        while(ok){
+            print(hola);
+        }
+    }
     return num;
+}
+
+function string prueba(string st){
+    print(st);
+    return prueba(st);
 }

@@ -28,7 +28,7 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     }
     fun SA4_2() {
         stack.pop()
-        if ((aux.elementAt(-1) as Tuple).second == Types.OK){
+        if ((aux.elementAt(1) as Tuple).second == Types.OK){
             (aux.elementAt(4) as Tuple).second = Types.OK
         }else throw Exception("Semantic error: SA4_2")
     }
@@ -41,8 +41,8 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     }
     fun SA6() {
         stack.pop()
-        if ((aux.elementAt(4) as Tuple).second == Types.BOOLEAN && (aux.elementAt(7) as Tuple).second == Types.OK) {
-            (aux.elementAt(5) as Tuple).second = Types.OK
+        if ((aux.elementAt(4) as Tuple).second == Types.BOOLEAN && (aux.elementAt(1) as Tuple).second == Types.OK) {
+            (aux.elementAt(7) as Tuple).second = Types.OK
         }
         else throw Exception("Semantic Error. Type mismatch.\nFound ${(aux.elementAt(4) as Tuple)} expected BOOLEAN.")
     }
@@ -80,7 +80,7 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
         stack.pop()
         if(!hasTypeGlobal((aux.peek() as Token))){
             addType((aux.peek() as Token), Types.INT)
-        }else throw Exception("Semantic Error. Variable ${getSymbol(aux.peek() as Token).lex} is already defined in the scope.")
+        }//else throw Exception("Semantic Error. Variable ${getSymbol(aux.peek() as Token).lex} is already defined in the scope.")
     }
     fun SA13_2() {
         stack.pop()
@@ -91,10 +91,10 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     fun SA14() {
         stack.pop()
         if(currentFunction == -1) throw Exception("Semantic error: return statement used outside of a function.")
-        if((aux.elementAt(2) as Tuple).second == ts.get(currentFunction)!!.returnType){
-            (aux.elementAt(5) as Tuple).second = Types.OK
+        if((aux.elementAt(1) as Tuple).second == ts.get(currentFunction)!!.returnType){
+            (aux.elementAt(3) as Tuple).second = Types.OK
         }
-        else throw Exception("Semantic Error. Type mismatch.\nFunction return error. Found ${(aux.peek() as Tuple).second} expected ${ts.get(currentFunction)!!.returnType}.")
+        else throw Exception("Semantic Error. Type mismatch on return statement: Found ${(aux.elementAt(1) as Tuple).second} expected ${ts.get(currentFunction)!!.returnType}.")
     }
     fun SA15() {
         stack.pop()
@@ -213,7 +213,7 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
             addType(aux.peek() as Token, (aux.elementAt(1) as Tuple).second as Types)
             ts.get(currentFunction)!!.addParameter((aux.elementAt(1) as Tuple).second as Types)
         }else{
-            throw Exception("Semantic Error: variable ${getSymbol(aux.peek() as Token)!!.lex} is already defined in the scope.")
+            throw Exception("Semantic Error: variable ${getSymbol(aux.peek() as Token).lex} is already defined in the scope.")
         }
     }
     fun SA35_2() {
@@ -306,9 +306,14 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
         stack.pop()
         if ((aux.peek() as Tuple).second == Types.OK) {
             (aux.elementAt(2) as Tuple).second = getSymbol((aux.elementAt(1) as Token)).type
-        }else if ((aux.peek() as Tuple).second == getSymbol((aux.elementAt(1) as Token)).type) {
-            (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
-        }else throw Exception("Semantic Error: Type mismatch. Expected ${(aux.peek() as Tuple).second} got ${getSymbol((aux.elementAt(1) as Token)).type}")
+        }else{
+            val symbol = getSymbol((aux.elementAt(1) as Token))
+            var type = symbol.type
+            if (type == Types.FUNCTION) type = symbol.returnType!!
+            if ((aux.peek() as Tuple).second == type) {
+                (aux.elementAt(2) as Tuple).second = (aux.peek() as Tuple).second
+            }else throw Exception("Semantic Error: Type mismatch. Expected ${(aux.peek() as Tuple).second} got $type.")
+        }
     }
     fun SA54() {
         stack.pop()
@@ -336,7 +341,8 @@ class SemanticAnalyzer(ssa: SyntaxAnalyzer, private val ts: MutableMap<Int, Tabl
     }
 
     fun popAux(num : Int) {
-        for (i in 0..num) aux.pop()
+        stack.pop()
+        for (i in 0 until num) aux.pop()
     }
 
     private fun getSymbol(token : Token): TableSymbol{

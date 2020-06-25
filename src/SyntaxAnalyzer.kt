@@ -25,8 +25,10 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, var symbolTable: Muta
         var currentIndex = 0
         var currentToken: Token
         stack.push(Tuple(States.P,null))
+        print("Stack             |  Aux             \n")
         while (currentIndex < tokenStream.size) {
             currentToken = tokenStream[currentIndex]
+            print("${stack.peek().toString()}           |  ${aux.peek().toString()}             \n")
             when (stack.peek()) {
 
                 is Token ->
@@ -270,7 +272,7 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, var symbolTable: Muta
             }
             "return" -> {
                 aux.push(stack.pop()!!)
-                stack.push(Tuple(SemanticAction.PA,5))
+                stack.push(Tuple(SemanticAction.PA,3))
                 stack.push(SemanticAction.SA14)
                 stack.push(Token(";", ""))
                 stack.push(Tuple(States.X,null))
@@ -512,8 +514,8 @@ class SyntaxAnalyzer(private val tokenStream: List<Token>, var symbolTable: Muta
                 stack.push(Tuple(SemanticAction.PA, 4))
                 stack.push(SemanticAction.SA35_2)
                 stack.push(Tuple(States.K,null))
-                stack.push(Token("id", ""))
                 stack.push(SemanticAction.SA35_1)
+                stack.push(Token("id", ""))
                 stack.push(Tuple(States.T,null))
                 stack.push(Token(",", ""))
                 parseOrder.add(35)
